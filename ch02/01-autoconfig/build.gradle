@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+    baseName = 'auto-config'
+    version =  '0.0.1-SNAPSHOT'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.springframework:spring-context:${springVersion}")
+    
+    testImplementation("org.springframework:spring-test:${springVersion}")
+    testImplementation("com.github.stefanbirkner:system-rules:${systemRulesVersion}")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.8'
+}
