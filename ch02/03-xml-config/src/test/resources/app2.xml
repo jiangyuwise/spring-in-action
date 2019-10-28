@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="fruits" class="com.codve.Fruits">
+        <constructor-arg name="fruits">
+            <list>
+                <value>apple</value>
+                <value>banana</value>
+                <value>pear</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <util:list id="fruitsList">
+        <value>apple</value>
+        <value>banana</value>
+        <value>pear</value>
+    </util:list>
+
+</beans>
