@@ -29,6 +29,7 @@ public class DataSourceConfigTest {
     @Autowired
     DataSource dataSource;
 
+    @SuppressWarnings("Duplicates")
     @Test
     public void test() {
         assertNotNull(dataSource);

@@ -1,12 +1,15 @@
 package com.codve;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 /**
  * @author admin
  * @date 2019/10/28 17:36
  */
+@Configuration
 public class PersonConfig {
 
     @Bean
@@ -22,6 +25,7 @@ public class PersonConfig {
     }
 
     @Bean
+    @Autowired
     public Group group(Person person) {
         return new Group(person);
     }
