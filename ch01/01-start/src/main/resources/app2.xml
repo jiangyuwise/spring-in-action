@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="student" class="com.codve.Student" c:task-ref="englishTask"/>
+
+    <bean id="englishTask" class="com.codve.EnglishTask" c:name="English"/>
+
+    <bean id="personInterceptor" class="com.codve.PersonInterceptor"/>
+
+    <!--使用aop, 声明切入点, 前置声明, 后置声明-->
+    <aop:config>
+        <aop:aspect ref="personInterceptor">
+            <aop:pointcut id="pointcut" expression="execution(* *.work(..))"/>
+            <aop:before pointcut-ref="pointcut" method="before"/>
+            <aop:after pointcut-ref="pointcut" method="after"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
