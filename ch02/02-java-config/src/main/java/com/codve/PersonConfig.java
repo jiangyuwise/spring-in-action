@@ -1,13 +1,13 @@
 package com.codve;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author admin
  * @date 2019/10/28 13:59
  */
-@Component
+@Configuration
 public class PersonConfig {
 
     @Bean
