@@ -1,7 +1,6 @@
 package com.codve;
 
 /**
- * TODO 编译未通过, 使用${} 获取的是 string, 无法转换为 int
  * @author admin
  * @date 2019/10/28 19:30
  */
