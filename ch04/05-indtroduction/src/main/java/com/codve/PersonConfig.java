@@ -1,14 +1,15 @@
 package com.codve;
 
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
+ * TODO 缺少代码
  * @author admin
  * @date 2019/10/29 14:34
  */
+@EnableAspectJAutoProxy
 @Configuration
 public class PersonConfig {
 
@@ -18,17 +19,8 @@ public class PersonConfig {
     }
 
     @Bean
-    public IsModifiedIntroduction introduction() {
-        return new IsModifiedIntroduction();
+    public IsDeveloperIntroduction introduction() {
+        return new IsDeveloperIntroduction();
     }
 
-    @Bean
-    public ProxyFactoryBean proxy() {
-        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-        proxyFactoryBean.addAdvisor(introduction());
-        proxyFactoryBean.setTarget(employee());
-        proxyFactoryBean.setProxyTargetClass(true);
-        proxyFactoryBean.setOptimize(true);
-        return proxyFactoryBean;
-    }
 }
