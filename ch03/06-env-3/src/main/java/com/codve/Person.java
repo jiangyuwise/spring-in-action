@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 使用资源占位符获取环境变量
- * TODO 这个更加失败了. 单元测试中无法加载属性文件, Person 没有默认构造函数
  * @author admin
  * @date 2019/10/29 10:01
  */
@@ -15,12 +14,12 @@ public class Person {
 
     private String name;
 
-    private String age;
+    private int age;
 
     @Autowired
     public Person(
             @Value("${person.name}") String name,
-            @Value("${person.age}") String age) {
+            @Value("${person.age}") int age) {
         this.name = name;
         this.age = age;
     }
