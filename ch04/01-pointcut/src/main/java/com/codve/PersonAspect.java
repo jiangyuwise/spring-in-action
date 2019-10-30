@@ -14,17 +14,17 @@ import org.aspectj.lang.annotation.Before;
 public class PersonAspect {
 
     @Before("execution (* com.codve.Person.work(..))")
-    public void prepare() {
+    public void before() {
         System.out.println("prepare");
     }
 
     @AfterReturning("execution (* com.codve.Person.work(..))")
-    public void after() {
+    public void afterReturning() {
         System.out.println("finished.");
     }
 
     @AfterThrowing("execution (* com.codve.Person.work(..))")
-    public void error() {
+    public void afterThrowing() {
         System.out.println("something wrong happened.");
     }
 }
