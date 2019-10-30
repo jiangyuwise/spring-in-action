@@ -16,6 +16,6 @@ public class Employee implements Person {
 
     @Override
     public void info() {
-        System.out.println("position: " + position + ", name: " + name);
+        System.out.println("name: " + name + ", position: " + position);
     }
 }
