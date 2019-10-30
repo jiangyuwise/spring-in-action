@@ -12,7 +12,7 @@ import org.aspectj.lang.annotation.DeclareParents;
 public class IsDeveloperIntroduction {
 
     /**
-     * value 表示要引入新功能的类, + 表示 Person 的子类要引入新功能, 而不是 Person
+     * value 表示谁要引入新功能, + 表示 Person 的子类要引入新功能, 而不是 Person
      * 注解的静态属性表示要引入的新功能
      * defaultImpl 表示新功能的实现
      */

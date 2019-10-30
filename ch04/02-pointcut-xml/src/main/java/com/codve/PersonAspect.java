@@ -16,17 +16,17 @@ public class PersonAspect {
     }
 
     @Before("pointcut()")
-    public void prepare() {
+    public void before() {
         System.out.println("prepare");
     }
 
     @AfterReturning("pointcut()")
-    public void after() {
+    public void afterReturning() {
         System.out.println("finished.");
     }
 
     @AfterThrowing("pointcut()")
-    public void error() {
+    public void afterThrowing() {
         System.out.println("something wrong happened.");
     }
 }

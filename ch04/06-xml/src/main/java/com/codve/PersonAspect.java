@@ -1,7 +1,5 @@
 package com.codve;
 
-import org.aspectj.lang.annotation.*;
-
 /**
  * 使用 XML 定义切面, 见 app.xml
  * @author admin
@@ -9,15 +7,15 @@ import org.aspectj.lang.annotation.*;
  */
 public class PersonAspect {
 
-    public void prepare() {
+    public void before() {
         System.out.println("prepare");
     }
 
-    public void after() {
+    public void afterReturning() {
         System.out.println("finished.");
     }
 
-    public void error() {
+    public void afterThrowing() {
         System.out.println("something wrong happened.");
     }
 }

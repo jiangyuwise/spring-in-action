@@ -10,9 +10,9 @@
 
             <aop:pointcut id="pointcut" expression="execution(* com.codve.Person.work(..))"/>
 
-            <aop:before pointcut-ref="pointcut" method="prepare"/>
-            <aop:after-returning pointcut-ref="pointcut" method="after"/>
-            <aop:after-throwing pointcut-ref="pointcut" method="error"/>
+            <aop:before pointcut-ref="pointcut" method="before"/>
+            <aop:after-returning pointcut-ref="pointcut" method="afterReturning"/>
+            <aop:after-throwing pointcut-ref="pointcut" method="afterThrowing"/>
         </aop:aspect>
     </aop:config>
 
