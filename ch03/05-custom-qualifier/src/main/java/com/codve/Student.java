@@ -18,6 +18,6 @@ public class Student implements Person{
 
     @Override
     public void info() {
-        System.out.println("name: " + name + "major: " + major);
+        System.out.println("name: " + name + ", major: " + major);
     }
 }
