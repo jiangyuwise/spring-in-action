@@ -5,6 +5,7 @@ import com.codve.data.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,8 +52,17 @@ public class MessageController {
     public String message(
             @PathVariable("messageId") long messageId,
             Model model) {
+        Message message = messageRepository.findOne(messageId);
+        if (message == null) {
+            throw new MessageNotFoundException();
+        }
         model.addAttribute(messageRepository.findOne(messageId));
         return "message";
+    }
+
+    @ExceptionHandler(DuplicateMessageException.class)
+    public String handleDuplicateMessage() {
+        return "error/duplicate";
     }
 
 

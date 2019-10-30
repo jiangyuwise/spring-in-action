@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 
 import javax.validation.Valid;
 
@@ -35,7 +36,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "register", method = POST)
-    public String register(@Valid User user, Errors errors) {
+    public String register(
+            @RequestPart("picture") byte[] picture,
+            @Valid User user, Errors errors) {
         if (errors.hasErrors()) {
             return "registerForm";
         }
