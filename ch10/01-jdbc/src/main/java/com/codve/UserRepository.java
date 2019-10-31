@@ -14,7 +14,7 @@ public interface UserRepository {
 
     User findOne(long userId);
 
-    User findByUsername(String username);
+    List<User> findByUsername(String username);
 
     List<User> findAll();
 }
