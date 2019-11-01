@@ -163,6 +163,23 @@ public class JdbcUserRepository implements UserRepository {
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
+    public List<Map<String, Object>> findAllUserArticle() {
+        String sql = "select `u`.`user_id`, `u`.`user_name`, `u`.`user_birthday`, " +
+                "`a`.`article_id`, `a`.`article_title`, `a`.`create_time` " +
+                "from `user` as `u` left join `article` as `a` " +
+                "on `u`.`user_id` = `a`.`user_id`";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> findAllUserArticleByUserId(long userId) {
+        String sql = "select `u`.`user_id`, `u`.`user_name`, `u`.`user_birthday`, " +
+                "`a`.`article_id`, `a`.`article_title`, `a`.`create_time` " +
+                "from `user` as `u` left join `article` as `a` " +
+                "on `u`.`user_id` = `a`.`user_id` " +
+                "where `u`.`user_id` = ?";
+        return jdbcTemplate.queryForList(sql, userId);
+    }
+
     private static final class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {

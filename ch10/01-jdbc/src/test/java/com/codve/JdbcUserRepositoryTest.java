@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -141,7 +142,7 @@ public class JdbcUserRepositoryTest {
 
     @Test
     public void testFindOne3() {
-        Map<String, Object> results=userRepository.findOne3(1);
+        Map<String, Object> results = userRepository.findOne3(1);
         assertTrue(results.size() > 0);
 
         results.forEach((key, value) -> System.out.println(key + ": " + value));
@@ -166,6 +167,34 @@ public class JdbcUserRepositoryTest {
         }
         assertTrue(userList.size() == 0);
 
+    }
+
+    @Test
+    public void testFindAllUserArticle() {
+        List<Map<String, Object>> resultList = userRepository.findAllUserArticle();
+        assertTrue(resultList.size() > 0);
+
+        resultList.forEach(e -> {
+            StringBuilder builder = new StringBuilder();
+            e.forEach((k, v) -> {
+                builder.append(k).append(": ");
+                if ("user_birthday".equalsIgnoreCase(k)) {
+                    Date date = new Date((long) v);
+                    builder.append(String.format("%tF", date));
+                } else {
+                    builder.append(v);
+                }
+                builder.append(" ");
+            });
+            System.out.println(builder.toString());
+        });
+    }
+
+    @Test
+    public void testFindAllUserArticleByUserId() {
+        List<Map<String, Object>> resultList =
+                userRepository.findAllUserArticleByUserId(4);
+        assertTrue(resultList.size() == 0);
     }
 
 
