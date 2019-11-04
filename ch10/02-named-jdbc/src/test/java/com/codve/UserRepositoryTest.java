@@ -156,4 +156,14 @@ class UserRepositoryTest {
         assertFalse(result);
         assertEquals(3, userRepository.countAll());
     }
+
+    // 事务 2
+    @Test
+    public void transact2Test() {
+        User user2 = new User();
+        user2.setName("Sara");
+        user2.setBirthday(System.currentTimeMillis());
+        boolean result = userRepository.transact2(Arrays.asList(user, user2));
+        assertFalse(result);
+    }
 }
