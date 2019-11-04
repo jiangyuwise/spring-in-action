@@ -1,6 +1,7 @@
 package com.codve;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -8,6 +9,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,9 +27,16 @@ public class UserRepository {
 
     private NamedParameterJdbcTemplate template;
 
+    private PlatformTransactionManager transactionManager;
+
     @Autowired
     public UserRepository(NamedParameterJdbcTemplate template) {
         this.template = template;
+    }
+
+    @Autowired
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     public boolean add(User user) {
@@ -132,6 +144,33 @@ public class UserRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "%" + username + "%");
         return template.query(sql, params, new UserRowMapper());
+    }
+
+    public boolean transact(List<User> userList) {
+        TransactionDefinition definition = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(definition);
+        User user1 = userList.get(0);
+        User user2 = userList.get(userList.size() - 1);
+        boolean result = false;
+        try {
+            String sql = "insert into `user` (`user_name`, `user_birthday`) values (:name, :birthday)";
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", user1.getName());
+            params.put("birthday", user1.getBirthday());
+            template.update(sql, params);
+
+            sql = "insert into `user` (`name`, `birthday`) values (:name, :birthday)";
+            params = new HashMap<>();
+            params.put("name", user2.getName());
+            params.put("birthday", user2.getBirthday());
+            template.update(sql, params);
+            transactionManager.commit(status);
+            result = true;
+        } catch (DataAccessException e ) {
+            transactionManager.rollback(status);
+            System.out.println(e.getMessage());
+        }
+        return result;
     }
 
     @SuppressWarnings("Duplicates")

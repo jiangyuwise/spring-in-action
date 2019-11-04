@@ -12,8 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author admin
@@ -145,5 +144,16 @@ class UserRepositoryTest {
         List<User> users = userRepository.findByUsername("J");
         assertNotNull(users);
         users.forEach(e -> System.out.println(e.toString()));
+    }
+
+    // 事务
+    @Test
+    public void transactTest() {
+        User user2 = new User();
+        user2.setName("Sara");
+        user2.setBirthday(System.currentTimeMillis());
+        boolean result = userRepository.transact(Arrays.asList(user, user2));
+        assertFalse(result);
+        assertEquals(3, userRepository.countAll());
     }
 }
