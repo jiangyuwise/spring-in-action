@@ -39,7 +39,7 @@ public class UserRepository {
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from User u").list();
+        return sessionFactory.getCurrentSession().createQuery("from User").list();
     }
 
 //    public long count() {

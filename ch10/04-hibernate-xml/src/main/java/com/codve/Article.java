@@ -10,22 +10,14 @@ import java.util.Date;
  * @date 2019/11/5 11:11
  */
 @Data
-@Entity
-@Table(name = "article")
 public class Article {
 
-    @Id
-    @Column(name = "article_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "user_id")
     private long userId;
 
-    @Column(name = "article_title")
     private String title;
 
-    @Column(name = "create_time")
     private long createTime;
 
     @Override

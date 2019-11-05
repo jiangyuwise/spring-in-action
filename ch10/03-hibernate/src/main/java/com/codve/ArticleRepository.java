@@ -24,7 +24,7 @@ public class ArticleRepository {
 
     @SuppressWarnings("unchecked")
     public List<Article> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Article a").list();
+        return sessionFactory.getCurrentSession().createQuery("from Article").list();
     }
 
     public Article save(Article article) {
