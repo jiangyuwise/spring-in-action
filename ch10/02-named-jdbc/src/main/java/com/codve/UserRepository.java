@@ -130,15 +130,12 @@ public class UserRepository {
         String sql = "select * from `user` where `user_id` = :id";
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        return template.queryForObject(sql, params, new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                User user = new User();
-                user.setId(rs.getLong("user_id"));
-                user.setName(rs.getString("user_name"));
-                user.setBirthday(rs.getLong("user_birthday"));
-                return user;
-            }
+        return template.queryForObject(sql, params, (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getLong("user_id"));
+            user.setName(rs.getString("user_name"));
+            user.setBirthday(rs.getLong("user_birthday"));
+            return user;
         });
     }
 
@@ -187,10 +184,7 @@ public class UserRepository {
     public boolean transact2(List<User> userList) {
         User user1 = userList.get(0);
         User user2 = userList.get(userList.size() - 1);
-         Boolean result = transactionTemplate.execute(new TransactionCallback<Boolean>() {
-            @Override
-            public Boolean doInTransaction(TransactionStatus status) {
-                boolean result = false;
+        Boolean result = transactionTemplate.execute((status) -> {
                 try {
                     String sql = "insert into `user` (`user_name`, `user_birthday`) values (:name, :birthday)";
                     Map<String, Object> params = new HashMap<>();
@@ -204,14 +198,12 @@ public class UserRepository {
                     params.put("birthday", user2.getBirthday());
                     template.update(sql, params);
                     transactionManager.commit(status);
-                    result = true;
-
+                    return true;
                 } catch (DataAccessException e) {
                     status.setRollbackOnly();
                     System.out.println(e.getMessage());
                 }
-                return result;
-            }
+                return false;
         });
         return result;
     }
