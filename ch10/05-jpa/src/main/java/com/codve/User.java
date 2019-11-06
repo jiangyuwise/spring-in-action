@@ -1,6 +1,7 @@
 package com.codve;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,13 +14,13 @@ import java.util.Date;
 @Entity
 @Table(name = "user")
 @NamedQueries({
-        @NamedQuery(name = "User.findById", query = "select u from User u where u.id = :id"),
-        @NamedQuery(name = "User.count", query="select count(*) from User")
+        @NamedQuery(name = "User.findById", query = "select u from User u where u.id = :id")
 })
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="userIdGenerator")
+    @GenericGenerator(name="userIdGenerator", strategy = "increment")
     @Column(name = "user_id")
     private Long id;
 
