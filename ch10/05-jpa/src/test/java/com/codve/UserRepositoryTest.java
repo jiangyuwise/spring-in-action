@@ -8,6 +8,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,6 +80,22 @@ class UserRepositoryTest {
     @Test
     public void findAllNativeTest() {
         List<User> userList = userRepository.findAllNative();
+        assertNotNull(userList);
+        userList.forEach(e -> System.out.println(e.toString()));
+    }
+
+    @Test
+    public void findByParamTest() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse("1995-08-07");
+        List<User> userList = userRepository.findByParam("Jimmy", date.getTime());
+        assertNotNull(userList);
+        userList.forEach(e -> System.out.println(e.toString()));
+    }
+
+    @Test
+    public void findByParamTest2() {
+        List<User> userList = userRepository.findByParam("Jimmy", 0);
         assertNotNull(userList);
         userList.forEach(e -> System.out.println(e.toString()));
     }

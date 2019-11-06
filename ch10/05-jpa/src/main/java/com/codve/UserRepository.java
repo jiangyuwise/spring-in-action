@@ -7,6 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -52,6 +56,26 @@ public class UserRepository {
     public List<User> findAllNative() {
         String sql = "select * from `user`";
         return entityManager.createNativeQuery(sql, User.class).getResultList();
+    }
+
+    public List<User> findByParam(String name, long birthday) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = builder.createQuery(User.class);
+        Root<User> userRoot = query.from(User.class);
+        query.select(userRoot).distinct(true);
+        Predicate predicate = builder.conjunction();
+
+        if (name != null) {
+            Predicate p = builder.equal(userRoot.get(User_.name), name);
+            predicate = builder.and(predicate, p);
+        }
+
+        if (birthday != 0) {
+            Predicate p = builder.equal(userRoot.get(User_.birthday), birthday);
+            predicate = builder.and(predicate, p);
+        }
+        query.where(predicate);
+        return entityManager.createQuery(query).getResultList();
     }
 
 }

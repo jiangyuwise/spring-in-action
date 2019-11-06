@@ -1,6 +1,7 @@
 plugins {
     id 'war'
     id 'java'
+    id 'idea'
 }
 
 group 'com.codve'
@@ -19,6 +20,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.2.0.RELEASE'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.8.Final'
+    providedCompile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '5.4.7.Final'
 
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
     providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
@@ -26,4 +28,11 @@ dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0-M1'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
 
+}
+
+idea {
+    module {
+        sourceDirs += file("out/production/classes/generated")
+        generatedSourceDirs += file("out/production/classes/generated")
+    }
 }
