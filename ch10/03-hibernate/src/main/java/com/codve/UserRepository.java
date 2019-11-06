@@ -2,6 +2,7 @@ package com.codve;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,10 +25,6 @@ public class UserRepository {
         this.sessionFactory = sessionFactory;
     }
 
-//    public User add(User user) {
-//        Serializable id = getSession().save(user);
-//    }
-
 //    public void add(User user) {
 //        Session session = sessionFactory.openSession();
 //        Transaction transaction = session.beginTransaction();
@@ -42,9 +39,15 @@ public class UserRepository {
         return sessionFactory.getCurrentSession().createQuery("from User").list();
     }
 
-//    public long count() {
-//        return sessionFactory.getCurrentSession().createQuery("from User u").
-//    }
+    public long count() {
+        Query query = sessionFactory.getCurrentSession().createQuery(
+                "select count(distinct u) from User u"
+        );
+        return (long) query.uniqueResult();
+//        return (long) sessionFactory.getCurrentSession()
+//                .getNamedQuery("User.count")
+//                .uniqueResult();
+    }
 
     public User save(User user) {
         sessionFactory.getCurrentSession().saveOrUpdate(user);
@@ -53,6 +56,14 @@ public class UserRepository {
 
     public void del(User user) {
         sessionFactory.getCurrentSession().delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
+        return (User) sessionFactory.getCurrentSession()
+                .getNamedQuery("User.findById")
+                .setParameter("id", id)
+                .uniqueResult();
     }
 
 }

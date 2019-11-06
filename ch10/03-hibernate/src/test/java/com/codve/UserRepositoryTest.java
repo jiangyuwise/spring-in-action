@@ -43,8 +43,8 @@ class UserRepositoryTest {
 
     @Test
     public void countTest() {
-//        long result = userRepository.count();
-//        assertTrue(result > 4);
+        long result = userRepository.count();
+        assertTrue(result > 0);
     }
 
     @Test
@@ -61,7 +61,6 @@ class UserRepositoryTest {
         userRepository.save(user);
 
         List<User> userList = userRepository.findAll();
-        assertEquals(4, userList.size());
         userList.forEach(e -> System.out.println(e.toString()));
     }
 
@@ -69,6 +68,13 @@ class UserRepositoryTest {
     public void delTest() {
         userRepository.save(user);
         userRepository.del(user);
+    }
+
+    @Test
+    public void findByIdTest() {
+        User tmp = userRepository.findById(1L);
+        assertNotNull(tmp);
+        System.out.println(tmp.toString());
     }
 
 }

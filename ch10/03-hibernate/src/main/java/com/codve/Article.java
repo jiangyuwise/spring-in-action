@@ -1,6 +1,7 @@
 package com.codve;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,7 +17,8 @@ public class Article {
 
     @Id
     @Column(name = "article_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "articleIdGenerator")
+    @GenericGenerator(name = "articleIdGenerator", strategy = "increment")
     private long id;
 
     @Column(name = "user_id")

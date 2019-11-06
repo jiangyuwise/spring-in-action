@@ -13,6 +13,10 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "user")
+@NamedQueries({
+        @NamedQuery(name = "User.findById", query = "select u from User u where u.id = :id"),
+        @NamedQuery(name = "User.count", query="select count(*) from User")
+})
 public class User {
 
     @Id
