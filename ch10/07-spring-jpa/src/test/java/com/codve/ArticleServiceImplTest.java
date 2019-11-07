@@ -41,4 +41,11 @@ class ArticleServiceImplTest {
         assertNotNull(articleList);
         articleList.forEach((e) -> System.out.println(e.toString())) ;
     }
+
+    @Test
+    public void findByUserIdTest() {
+        List<Article> articleList = articleService.findByUserId(1L);
+        assertNotNull(articleList);
+        articleList.forEach((e) -> System.out.println(e.toString()));
+    }
 }
