@@ -35,6 +35,20 @@ class UserServiceImplTest {
     }
 
     @Test
+    public void saveTest() {
+        userService.save(user);
+        assertTrue(user.getId() > 0);
+        System.out.println(user.toString());
+
+        user.setName("Angelica");
+        userService.save(user);
+
+        User tmp = userService.findById(user.getId());
+        assertNotNull(tmp);
+        System.out.println(tmp);
+    }
+
+    @Test
     public void findAllTest() {
         List<User> userList = userService.findAll();
         assertNotNull(userList);
@@ -46,5 +60,12 @@ class UserServiceImplTest {
         List<User> userList = userService.findByName("Jimmy");
         assertNotNull(userList);
         userList.forEach(e -> System.out.println(e.toString()));
+    }
+
+    @Test
+    public void findByIdTest() {
+        User user = userService.findById(2L);
+        assertNotNull(user);
+        System.out.println(user.toString());
     }
 }

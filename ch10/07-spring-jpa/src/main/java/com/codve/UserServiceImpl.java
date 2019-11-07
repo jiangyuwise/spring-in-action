@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author admin
@@ -23,6 +24,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public List<User> findAll() {
         Iterable<User> userIterable = userRepository.findAll();
         List<User> userList = new ArrayList<>();
@@ -33,5 +39,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findByName(String name) {
         return userRepository.findByName(name);
+    }
+
+    @Override
+    public User findById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.orElse(null);
     }
 }
