@@ -14,7 +14,6 @@ import java.util.Optional;
  * @date 2019/11/6 18:28
  */
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;

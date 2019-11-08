@@ -42,9 +42,9 @@ public class PropagationTest {
     }
 
     /**
-     * user 和 article 都插入成功
-     * 外部方法没有开启事务
-     * 外部方法异常不影响内部方法的事务
+     * 外部没有开启事务, 子方法是 propagation.requires_new
+     * user 和 article 会创建自己的事务
+     * user, article 都会插入成功
      */
     @Test
     public void test1() {
@@ -56,9 +56,8 @@ public class PropagationTest {
     }
 
     /**
-     * user 插入成功, article 插入失败
      * 外部方法没有开启事务
-     * propagation.required 注解的方法会新开自己的事务, 且相互独立
+     * user 插入成功, article 插入失败
      */
     @Test
     public void test2() {
@@ -69,8 +68,8 @@ public class PropagationTest {
     }
 
     /**
+     * 外部方法开启事务, 内部事务与外部事务互不影响
      * user, article 都插入成功
-     * 外部方法开启事务, propagation.requires_new注解的内部事务与外部事务互不影响
      */
     @Test
     @Transactional(propagation = Propagation.REQUIRES_NEW)
