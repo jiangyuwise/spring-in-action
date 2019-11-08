@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author admin
@@ -135,5 +136,13 @@ public class PropagationTest {
             System.out.println(e.getClass());
         }
     }
+
+    @Test
+    public void test6() {
+        userService.saveWithArticle(user, article);
+        assertTrue(user.getId() > 0);
+        System.out.println(user.toString());
+    }
+
 
 }
