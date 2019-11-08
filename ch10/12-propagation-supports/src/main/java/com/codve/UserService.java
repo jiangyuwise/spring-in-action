@@ -17,4 +17,7 @@ public interface UserService {
     User findById(Long id);
 
     User saveWithArticle(User user, Article article);
+
+    Article saveArticle(Article article);
+
 }

@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -63,5 +63,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public Article saveArticle(Article article) {
+        return articleService.save(article);
     }
 }

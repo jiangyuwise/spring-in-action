@@ -22,7 +22,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = Propagation.MANDATORY)
     public Article save(Article article) {
         return articleRepository.save(article);
     }

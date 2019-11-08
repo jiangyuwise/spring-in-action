@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,28 @@ public class PropagationTest {
     }
 
     /**
+     * mandatory 要求必须有事务
+     * 此时外部没有事务, 所以会抛出异常.
+     */
+    @Test
+    public void saveTest() {
+        assertThrows(IllegalTransactionStateException.class, () -> {
+            articleService.save(article);
+        });
+    }
+
+    /**
+     * mandatory
+     * 此时有事务, 子方法加入该事务.
+     * article 插入成功
+     */
+    @Test
+    public void saveTest2() {
+        userService.saveArticle(article);
+    }
+
+    /**
+     * supports
      * 外部没有事务, 只能按非事务方式执行, 即使抛出异常也无法回滚
      * article 插入成功
      */
@@ -54,6 +77,7 @@ public class PropagationTest {
     }
 
     /**
+     * supports
      * 外部有事务, 子方法加入外部事务.
      * 外部事务回滚, article 插入失败
      */
@@ -64,5 +88,4 @@ public class PropagationTest {
             articleService.saveWithException(article);
         });
     }
-
 }
