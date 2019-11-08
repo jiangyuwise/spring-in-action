@@ -1,5 +1,7 @@
 package com.codve;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,10 +16,11 @@ import java.util.Optional;
  * @date 2019/11/6 18:28
  */
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+
+    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public User save(User user) {
+        logger.info(user.toString());
         return userRepository.save(user);
     }
 

@@ -13,7 +13,6 @@ import java.util.List;
  * @date 2019/11/7 11:49
  */
 @Service
-@Transactional
 public class ArticleServiceImpl implements ArticleService {
 
     private ArticleRepository articleRepository;
