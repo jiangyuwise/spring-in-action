@@ -1,0 +1,51 @@
+{
+  "configuration": {
+    "status": "warn",
+    "appenders": {
+      "Console": {
+        "name": "console",
+        "target": "SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "%date{DEFAULT} [%thread] %level %location - %msg%n"
+        }
+      },
+      "RollingFile": {
+        "name": "fileAppender",
+        "fileName": "logs/app.log",
+        "filePattern": "logs/app-%date{yyyy-MM-dd}-%i.log",
+        "PatternLayout": {
+          "pattern": "%date{DEFAULT} [%thread] %level %location: - %msg%n"
+        },
+        "Policies": {
+          "SizeBasedTriggeringPolicy": {
+            "size": "10MB"
+          }
+        },
+        "DefaultRolloverStrategy": {
+          "max": "10"
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "debug",
+        "appender-ref": {
+          "ref": "console"
+        }
+      },
+      "logger": {
+        "name": "com.codve",
+        "level": "trace",
+        "additivity": "false",
+        "appender-ref": [
+          {
+            "ref": "console"
+          },
+          {
+            "ref": "fileAppender"
+          }
+        ]
+      }
+    }
+  }
+}
