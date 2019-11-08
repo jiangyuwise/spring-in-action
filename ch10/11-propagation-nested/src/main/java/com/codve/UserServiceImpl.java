@@ -7,14 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author admin
  * @date 2019/11/6 18:28
  */
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -45,7 +43,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.orElse(null);
+        return userRepository.findById(id);
     }
 }
