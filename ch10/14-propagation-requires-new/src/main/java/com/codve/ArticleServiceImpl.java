@@ -1,12 +1,9 @@
 package com.codve;
 
-import org.omg.SendingContext.RunTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * @author admin
@@ -30,18 +27,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveWithException(Article article) {
+    public void saveWithException(Article article) throws RuntimeException {
         articleRepository.save(article);
         throw new RuntimeException();
     }
 
     @Override
-    public List<Article> findByUserId(Long userId) {
-        return articleRepository.findByUserId(userId);
-    }
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveWithCatch(Article article) {
+        try {
+            articleRepository.save(article);
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            System.out.println(e.getClass());
+        }
 
-    @Override
-    public List<Article> findByTitle(String title) {
-        return articleRepository.findByTitle(title);
     }
 }

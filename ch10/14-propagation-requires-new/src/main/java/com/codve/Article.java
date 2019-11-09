@@ -19,16 +19,16 @@ public class Article {
     @Id
     @Column(name = "article_id")
     @GeneratedValue(strategy = IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @Column(name = "article_title")
     private String title;
 
     @Column(name = "create_time")
-    private long createTime;
+    private Long createTime;
 
     @Override
     public String toString() {
