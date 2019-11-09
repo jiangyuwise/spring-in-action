@@ -3,13 +3,14 @@ package com.codve;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author admin
@@ -41,29 +42,5 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         }, keyHolder);
         article.setId(keyHolder.getKey().longValue());
         return article;
-    }
-
-    @Override
-    public List<Article> findByUserId(Long userId) {
-        String sql = "select * from `article` where `user_id` = ?";
-        return jdbcTemplate.query(sql, new ArticleRowMapper(), userId);
-    }
-
-    @Override
-    public List<Article> findByTitle(String title) {
-        String sql = "select * from `article` where `article_title` like ?";
-        return jdbcTemplate.query(sql, new ArticleRowMapper(), "%" + title + "%");
-    }
-
-    private static final class ArticleRowMapper implements RowMapper<Article> {
-        @Override
-        public Article mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Article article = new Article();
-            article.setId(rs.getLong("article_id"));
-            article.setUserId(rs.getLong("user_id"));
-            article.setTitle(rs.getString("article_title"));
-            article.setCreateTime(rs.getLong("create_time"));
-            return article;
-        }
     }
 }

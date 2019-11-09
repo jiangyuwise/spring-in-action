@@ -3,13 +3,14 @@ package com.codve;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author admin
@@ -40,35 +41,6 @@ public class UserRepositoryImpl implements UserRepository {
         }, keyHolder);
         user.setId(keyHolder.getKey().longValue());
         return user;
-    }
-
-    @Override
-    public List<User> findByName(String name) {
-        String sql = "select * from `user` where `user_name` like ?";
-        return jdbcTemplate.query(sql, new UserRowMapper(), "%" + name + "%");
-    }
-
-    @Override
-    public List<User> findAll() {
-        String sql = "select * from `user`";
-        return jdbcTemplate.query(sql, new UserRowMapper());
-    }
-
-    @Override
-    public User findById(Long userId) {
-        String sql = "select * from `user` where `user_id` = ?";
-        return jdbcTemplate.queryForObject(sql, new UserRowMapper(), userId);
-    }
-
-    private static final class UserRowMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
-            user.setId(rs.getLong("user_id"));
-            user.setName(rs.getString("user_name"));
-            user.setBirthday(rs.getLong("user_birthday"));
-            return user;
-        }
     }
 
 }

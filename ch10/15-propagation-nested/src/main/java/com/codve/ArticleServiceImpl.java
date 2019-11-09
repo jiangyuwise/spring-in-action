@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * @author admin
  * @date 2019/11/7 11:49
@@ -29,18 +27,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public void saveWithException(Article article) {
+    public void saveWithException(Article article) throws RuntimeException {
         articleRepository.save(article);
         throw new RuntimeException();
     }
 
     @Override
-    public List<Article> findByUserId(Long userId) {
-        return articleRepository.findByUserId(userId);
-    }
+    @Transactional(propagation = Propagation.NESTED)
+    public void saveWithCatch(Article article) {
+        try {
+            articleRepository.save(article);
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            System.out.println(e.getClass());
+        }
 
-    @Override
-    public List<Article> findByTitle(String title) {
-        return articleRepository.findByTitle(title);
     }
 }
