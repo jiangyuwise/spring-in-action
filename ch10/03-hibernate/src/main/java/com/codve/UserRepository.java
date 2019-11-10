@@ -1,6 +1,5 @@
 package com.codve;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,6 @@ public class UserRepository {
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-
-//    public void add(User user) {
-//        Session session = sessionFactory.openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.persist(user);
-//        transaction.commit();
-//        session.close();
-//    }
 
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
