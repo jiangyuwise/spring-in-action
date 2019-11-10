@@ -20,8 +20,6 @@ class UserServiceImplTest {
 
     private User user;
 
-    private Article article;
-
     @Autowired
     private UserService userService;
 
@@ -30,22 +28,26 @@ class UserServiceImplTest {
         user = new User();
         user.setName("Aka");
         user.setBirthday(System.currentTimeMillis());
-
-        article = new Article();
-        article.setUserId(3L);
-        article.setTitle("Life is hard");
-        article.setCreateTime(System.currentTimeMillis());
     }
 
     @Test
-    public void test1() {
-        assertThrows(IllegalTransactionStateException.class, () -> {
-            userService.save1(article);
+    public void saveTest() {
+        userService.save(user);
+        assertTrue(user.getId() > 0);
+        System.out.println(user.toString());
+    }
+
+    @Test
+    public void saveWithExceptionTest() {
+        assertThrows(RuntimeException.class, () -> {
+            userService.saveWithException(user);
         });
     }
 
     @Test
-    public void test2() {
-        userService.save2(article);
+    public void save2WithExceptionTest() {
+        assertThrows(RuntimeException.class, () -> {
+            userService.save2WithException(user);
+        });
     }
 }

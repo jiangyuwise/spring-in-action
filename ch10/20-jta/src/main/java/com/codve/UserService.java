@@ -10,10 +10,5 @@ public interface UserService {
 
     void saveWithException(User user) throws RuntimeException;
 
-    void save1(User user, Article article) throws RuntimeException;
-
-    void save2(Article article);
-
-
-
+    void save2WithException(User user) throws RuntimeException;
 }

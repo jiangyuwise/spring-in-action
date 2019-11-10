@@ -34,7 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
+    public User save1(User user) {
         String sql = "insert into `user` (`user_name`, `user_birthday`) values (?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate1.update(con -> {
@@ -44,10 +44,19 @@ public class UserRepositoryImpl implements UserRepository {
             return stmt;
         }, keyHolder);
         user.setId(keyHolder.getKey().longValue());
-
-        String sql2 = "insert into `user` (`user_id`, `user_name`, `user_birthday`) values (?, ?, ?)";
-        jdbcTemplate2.update(sql2, user.getId(), user.getName(), user.getBirthday());
         return user;
     }
 
+    @Override
+    public void save2(User user) {
+        String sql2 = "insert into `user` (`user_id`, `user_name`, `user_birthday`) values (?, ?, ?)";
+        jdbcTemplate2.update(sql2, user.getId(), user.getName(), user.getBirthday());
+    }
+
+    @Override
+    public void save2WithException(User user) throws RuntimeException {
+        String sql2 = "insert into `user` (`user_id`, `user_name`, `user_birthday`) values (?, ?, ?)";
+        jdbcTemplate2.update(sql2, user.getId(), user.getName(), user.getBirthday());
+        throw new RuntimeException();
+    }
 }

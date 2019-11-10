@@ -6,5 +6,9 @@ package com.codve;
  */
 public interface UserRepository {
 
-    User save(User user);
+    User save1(User user);
+
+    void save2(User user);
+
+    void save2WithException(User user) throws RuntimeException;
 }

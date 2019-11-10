@@ -13,51 +13,47 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
-    private ArticleService articleService;
-
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @Autowired
-    public void setArticleService(ArticleService articleService) {
-        this.articleService = articleService;
-    }
-
+    /**
+     * 两个数据库都插入成功
+     * @param user user
+     * @return user
+     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public User save(User user) {
-        return userRepository.save(user);
+        User saved = userRepository.save1(user);
+        userRepository.save2(saved);
+        return saved;
     }
 
+    /**
+     * 开始两个数据库都插入成功.
+     * 但方法抛出异常, 最后两个数据库都回滚
+     * @param user user
+     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public void saveWithException(User user) {
-        userRepository.save(user);
+        User saved = userRepository.save1(user);
+        userRepository.save2(saved);
         throw new RuntimeException();
     }
 
     /**
-     * 两个数据库都插入成功.
-     * @param user
-     * @param article
-     * @throws RuntimeException
+     * 第一个数据库正常插入, 第二个数据库插入时抛出异常
+     * 最后2个数据库都回滚
+     * @param user user
+     * @throws RuntimeException runtimeException
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void save1(User user, Article article) throws RuntimeException{
-        userRepository.save(user);
-        articleService.save(article);
-    }
-
-    /**
-     * 外部没有事务
-     * article 插入成功
-     * @param article article
-     */
-    @Override
-    public void save2(Article article){
-        articleService.save(article);
+    public void save2WithException(User user) throws RuntimeException {
+        User saved = userRepository.save1(user);
+        userRepository.save2WithException(saved);
     }
 }
