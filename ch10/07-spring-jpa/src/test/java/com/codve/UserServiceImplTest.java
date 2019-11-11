@@ -8,6 +8,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,5 +70,15 @@ class UserServiceImplTest {
         User user = userService.findById(2L);
         assertNotNull(user);
         System.out.println(user.toString());
+    }
+
+    @Test
+    public void findByBirthdayTest() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = format.parse("1995-1-1");
+        Date end = format.parse("1999-12-31");
+        List<User> userList = userService.findByBirthday(start.getTime(), end.getTime());
+        assertNotNull(userList);
+        userList.forEach(e -> System.out.println(e.toString()));
     }
 }

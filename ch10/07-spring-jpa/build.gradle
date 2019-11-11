@@ -19,6 +19,8 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.2.0.RELEASE'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.8.Final'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
     providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'

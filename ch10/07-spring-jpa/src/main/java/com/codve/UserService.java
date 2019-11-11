@@ -15,4 +15,6 @@ public interface UserService {
     List<User> findByName(String name);
 
     User findById(Long id);
+
+    List<User> findByBirthday(Long start, Long end);
 }
