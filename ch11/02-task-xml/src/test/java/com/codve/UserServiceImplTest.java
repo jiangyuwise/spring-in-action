@@ -50,7 +50,7 @@ class UserServiceImplTest {
 
     @Test
     public void findByNameTest() {
-        List<User> userList = userService.findByName("James");
+        List<User> userList = userService.findByName("j");
         assertNotNull(userList);
         userList.forEach(e -> System.out.println(e.toString()));
     }
