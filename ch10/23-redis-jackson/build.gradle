@@ -1,0 +1,31 @@
+plugins {
+    id 'war'
+    id 'java'
+}
+
+group 'com.codve'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework', name: 'spring-context', version: '5.2.1.RELEASE'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'org.springframework.data', name: 'spring-data-redis', version: '2.2.1.RELEASE'
+    compile group: 'redis.clients', name: 'jedis', version: '3.1.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
+
+    providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+    
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '5.2.1.RELEASE'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0-M1'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.1.0'
+
+}
