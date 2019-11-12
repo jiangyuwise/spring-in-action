@@ -30,6 +30,7 @@ class AppConfigTest {
         redisTemplate.opsForValue().set(key, value);
         String result = redisTemplate.opsForValue().get(key);
         assertEquals(result, value);
+        System.out.println(result);
         redisTemplate.delete(key);
     }
 
@@ -59,6 +60,28 @@ class AppConfigTest {
         values.forEach(System.out::println);
 
         redisTemplate.delete(keys);
+    }
+
+    @Test
+    public void testKeyValue4() {
+        int num = 23;
+        redisTemplate.opsForValue().set("num", String.valueOf(num));
+
+        String result =  redisTemplate.opsForValue().get("num");
+        int intResult = Integer.parseInt(result);
+        assertEquals(23, intResult);
+
+        redisTemplate.opsForValue().increment("num");
+        result = redisTemplate.opsForValue().get("num");
+        intResult = Integer.parseInt(result);
+        assertEquals(24, intResult);
+
+        redisTemplate.opsForValue().increment("num", 2);
+        result = redisTemplate.opsForValue().get("num");
+        intResult = Integer.parseInt(result);
+        assertEquals(26, intResult);
+
+        redisTemplate.delete("num");
     }
 
     @Test

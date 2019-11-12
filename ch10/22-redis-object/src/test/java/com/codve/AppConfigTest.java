@@ -44,8 +44,32 @@ class AppConfigTest {
         User value = (User) redisTemplate.opsForValue().get("user");
         assertNotNull(value);
         System.out.println(value.toString());
+        redisTemplate.delete("user");
     }
 
     @Test
-    
+    public void keyValueTest3() {
+        int num = 12;
+        redisTemplate.opsForValue().set("num", num);
+
+        int result = (int) redisTemplate.opsForValue().get("num");
+        assertEquals(num, result);
+
+        redisTemplate.opsForValue().increment("num");
+        result = (int) redisTemplate.opsForValue().get("num");
+        assertEquals(num + 1, result);
+    }
+
+    @Test
+    public void listTest() {
+        User user1 = new User("james", 24);
+        User user2 = new User("kate", 22);
+        redisTemplate.opsForList().rightPushAll("userList", user1, user2);
+
+        List<Object> userList = redisTemplate.opsForList().range("userList", 0, -1);
+        assertNotNull(userList);
+        userList.forEach(e -> System.out.println(e.toString()));
+        redisTemplate.delete("userList");
+    }
+
 }
