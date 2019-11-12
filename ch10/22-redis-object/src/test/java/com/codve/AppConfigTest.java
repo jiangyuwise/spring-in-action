@@ -57,7 +57,21 @@ class AppConfigTest {
 
         redisTemplate.opsForValue().increment("num");
         result = (int) redisTemplate.opsForValue().get("num");
+        System.out.println(result);
         assertEquals(num + 1, result);
+        redisTemplate.delete("num");
+    }
+
+    @Test
+    public void keyValueTest4() {
+        boolean ans = true;
+        redisTemplate.opsForValue().set("ans", ans);
+
+        boolean result = (boolean) redisTemplate.opsForValue().get("ans");
+        assertTrue(result);
+        System.out.println(result);
+
+        redisTemplate.delete("ans");
     }
 
     @Test
@@ -70,6 +84,34 @@ class AppConfigTest {
         assertNotNull(userList);
         userList.forEach(e -> System.out.println(e.toString()));
         redisTemplate.delete("userList");
+    }
+
+    @Test
+    public void hashTest() {
+        User user1 = new User("james", 24);
+        User user2 = new User("Anna", 22);
+        redisTemplate.opsForHash().put("userHash", "user1", user1);
+        redisTemplate.opsForHash().put("userHash", "user2", user2);
+
+        User savedUser1 = (User) redisTemplate.opsForHash().get("userHash", "user1");
+        assertNotNull(savedUser1);
+
+        Map<Object, Object> userMap = redisTemplate.opsForHash().entries("userHash");
+        assertNotNull(userMap);
+        userMap.forEach((k, v) -> System.out.println(k + ": " + v.toString()));
+        redisTemplate.delete("userHash");
+    }
+
+    @Test
+    public void setTest() {
+        User user1 = new User("james", 24);
+        User user2 = new User("Anna", 22);
+        redisTemplate.opsForSet().add("userSet", user1, user2);
+
+        Set<Object> userSet = redisTemplate.opsForSet().members("userSet");
+        assertNotNull(userSet);
+        userSet.forEach(e -> System.out.println(e.toString()));
+        redisTemplate.delete("userSet");
     }
 
 }
