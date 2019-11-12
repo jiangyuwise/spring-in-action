@@ -1,5 +1,7 @@
 package com.codve;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,21 @@ class AppConfigTest {
         assertEquals(26, intResult);
 
         redisTemplate.delete("num");
+    }
+
+    @Test
+    public void testKeyValue5() throws JsonProcessingException {
+        User user = new User("Alice", 24);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStr = objectMapper.writeValueAsString(user);
+
+        redisTemplate.opsForValue().set("user", jsonStr);
+
+        String savedStr = redisTemplate.opsForValue().get("user");
+        System.out.println(savedStr);
+        User savedUser = objectMapper.readValue(savedStr, User.class);
+        System.out.println(savedUser.toString());
+        redisTemplate.delete("user");
     }
 
     @Test
