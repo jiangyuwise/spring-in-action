@@ -3,6 +3,7 @@
 out/
 build/
 
+*.log
 *.iml
 *.DS_Store
 *.jar
