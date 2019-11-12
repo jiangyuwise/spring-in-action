@@ -22,7 +22,7 @@
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
     </root>
-    <logger name="com.codve" level="INFO" additivity="false">
+    <logger name="com.codve" level="debug" additivity="false">
         <appender-ref ref="stdout"/>
         <appender-ref ref="fileAppender"/>
     </logger>
