@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codve.mapper.UserMapper">
+    <insert id="insert" parameterType="com.codve.User">
+        insert into `user`(`user_name`, `user_birthday`) values (#{name}, #{birthday})
+    </insert>
+
+    <select id="findById" parameterType="Long"
+            resultType="com.codve.User">
+        select `user_id`, `user_name`, `user_birthday` from `user` where `user_id` = #{userId}
+    </select>
+
+    <select id="findAll" resultType="com.codve.User">
+        select `user_id`, `user_name`, `user_birthday` from `user`
+    </select>
+
+    <update id="update" parameterType="com.codve.User">
+        update `user` set `user_name` = #{userName} where `user_id` = #{userId}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        delete from `user` where `user_id` = #{userId}
+    </delete>
+
+</mapper>
