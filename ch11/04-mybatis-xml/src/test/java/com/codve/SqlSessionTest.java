@@ -9,13 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -46,21 +44,33 @@ public class SqlSessionTest {
         Date date = dateFormat.parse("1995-08-07");
         User user = new User("James", date.getTime());
         String statement = namespace + ".insert";
-        sqlSession.insert("com.code.mapper.UserMapper.insert", user);
+        sqlSession.insert(statement, user);
     }
 
     @Test
     public void findByIdTest() {
-        User user = sqlSession.selectOne(namespace + ".findById", 1L);
+        User user = sqlSession.selectOne(namespace + ".findById", 2L);
         assertNotNull(user);
         System.out.println(user.toString());
     }
 
     @Test
+    public void updateTest() {
+        User user = sqlSession.selectOne(namespace + ".findById", 2L);
+        user.setBirthday(System.currentTimeMillis());
+        sqlSession.update(namespace + ".update", user);
+    }
+
+    @Test
+    public void deleteTest() {
+        User user = sqlSession.selectOne(namespace + ".findById", 22L);
+        sqlSession.delete(namespace + ".delete", user.getId());
+    }
+
+    @Test
     public void findAllTest() {
         List<User> userList = sqlSession.selectList(namespace + ".findAll");
-//        System.out.println(conn.toString());
         assertNotNull(userList);
-//        System.out.println(userList.size());
+        userList.forEach(e-> System.out.println(e.toString()));
     }
 }
