@@ -50,4 +50,78 @@
         <if test="birthday != null">and `user_birthday` >= #{birthday}</if>
     </select>
 
+    <update id="updateIf" parameterType="User">
+        update `user` set
+        <if test="name != null and name != ''">`user_name` = #{name}, </if>
+        <if test="birthday != 0">`user_birthday` = #{birthday}, </if>
+        `user_id` = #{id} where `user_id` = #{id}
+    </update>
+
+    <insert id="insertIf" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into `user` (
+          <if test="name != null"> `user_name` </if>
+          <if test="birthday != null">, `user_birthday`</if>)
+        values (
+          <if test="name != null">#{name}</if>
+          <if test="birthday != null">, #{birthday}</if>
+        )
+    </insert>
+
+    <select id="selectChoose" resultMap="userMap">
+        select * from `user` where 1 = 1
+        <choose>
+            <when test="id != null"> and `user_id` = #{id}</when>
+            <when test="name != null"> and `user_name` like concat('%', #{name}, '%')</when>
+            <when test="birthday != null"> and `user_birthday` >= #{birthday}</when>
+            <otherwise> and 1 = 2</otherwise>
+        </choose>
+    </select>
+
+    <select id="selectWhere" parameterType="User" resultMap="userMap">
+        select * from `user`
+        <where>
+            <if test="name != null and name != ''"> and `user_name` like concat('%', #{name}, '%')</if>
+            <if test="birthday != null">and `user_birthday` >= #{birthday}</if>
+        </where>
+    </select>
+
+    <update id="updateSet" parameterType="User">
+        update `user`
+        <set>
+            <if test="name != null and name != ''">`user_name` = #{name}, </if>
+            <if test="birthday != null">`user_birthday` = #{birthday}, </if>
+            `user_id` = #{id}
+        </set>
+        where `user_id` = #{id}
+    </update>
+
+    <select id="selectForeach" resultMap="userMap">
+        select * from `user` where `user_id` in
+        <foreach collection="idList"  open="(" close=")" separator=", " item="id" index="i">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertForeach">
+        insert into `user` (`user_name`, `user_birthday`) values
+        <foreach collection="userList" item="user" separator=",">
+            (#{user.name}, #{user.birthday})
+        </foreach>
+    </insert>
+
+    <insert id="insertForeach2" useGeneratedKeys="true" keyProperty="id">
+        insert into `user` (`user_name`, `user_birthday`) values
+        <foreach collection="userList" item="user" separator=",">
+            (#{user.name}, #{user.birthday})
+        </foreach>
+    </insert>
+
+    <update id="updateForeach">
+        update `user` set
+        <foreach collection="_parameter" item="val" index="key" separator=", ">
+            ${key} = #{val}
+        </foreach>
+        where `user_id` = #{user_id}
+    </update>
+
 </mapper>
