@@ -4,6 +4,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author admin
@@ -39,12 +42,18 @@ public class SqlSessionTest {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
+    @AfterEach
+    void tearDown() {
+        sqlSession.close();
+    }
+
     @Test
     public void insertTest() throws ParseException {
         Date date = dateFormat.parse("1995-08-07");
         User user = new User("James", date.getTime());
         String statement = namespace + ".insert";
-        sqlSession.insert(statement, user);
+        int result = sqlSession.insert(statement, user);
+        assertEquals(1, result);
     }
 
     @Test
@@ -72,5 +81,12 @@ public class SqlSessionTest {
         List<User> userList = sqlSession.selectList(namespace + ".findAll");
         assertNotNull(userList);
         userList.forEach(e-> System.out.println(e.toString()));
+    }
+
+    @Test
+    public void countTest() {
+        long count = sqlSession.selectOne(namespace + ".count");
+        assertTrue(count > 0);
+        System.out.println(count);
     }
 }

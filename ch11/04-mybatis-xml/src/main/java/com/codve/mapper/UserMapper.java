@@ -19,4 +19,6 @@ public interface UserMapper {
     int update(User user);
 
     int delete(Long userId);
+
+    Long count();
 }
