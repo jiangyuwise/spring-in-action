@@ -44,4 +44,10 @@
         delete from `user` where `user_id` = #{userId}
     </delete>
 
+    <select id="selectIf" resultMap="userMap">
+        select * from `user` where 1 = 1
+        <if test="name != null and name != ''">and `user_name` like concat('%', #{name}, '%')</if>
+        <if test="birthday != null">and `user_birthday` >= #{birthday}</if>
+    </select>
+
 </mapper>

@@ -26,4 +26,7 @@ public interface UserMapper {
     int delete(Long userId);
 
     Long count();
+
+    List<User> selectIf(@Param("name") String name, @Param("birthday") Long birthday);
+
 }
