@@ -14,7 +14,7 @@
 
     <insert id="insertAfter" parameterType="User">
         insert into `user`(`user_name`, `user_birthday`) values (#{name}, #{birthday})
-        <selectKey keyColumn="user_id" resultType="long" keyProperty="id" order="AFTER">
+        <selectKey keyColumn="user_id" keyProperty="id" order="AFTER" resultType="long">
             select last_insert_id();
         </selectKey>
     </insert>

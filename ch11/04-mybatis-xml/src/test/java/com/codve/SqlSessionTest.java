@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +35,14 @@ public class SqlSessionTest {
 
     private DateFormat dateFormat;
 
-    @BeforeEach
-    void setUp() throws IOException {
+    @BeforeAll
+    static void setUpAll() throws IOException {
         InputStream in = Resources.getResourceAsStream("mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
+    }
+
+    @BeforeEach
+    void setUp() {
         sqlSession = sqlSessionFactory.openSession();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }

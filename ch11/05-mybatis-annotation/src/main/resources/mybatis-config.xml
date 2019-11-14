@@ -2,6 +2,12 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+    <typeAliases>
+        <package name="com.codve"/>
+    </typeAliases>
     <environments default="development">
         <environment id="development">
             <transactionManager type="MANAGED"/>
@@ -15,6 +21,6 @@
     </environments>
 
     <mappers>
-        <mapper class="com.codve.mapper.UserMapper"/>
+        <package name="com.codve.mapper"/>
     </mappers>
 </configuration>
