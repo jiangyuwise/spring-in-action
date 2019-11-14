@@ -11,7 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,12 +32,15 @@ class UserMapperTest {
 
     private UserMapper userMapper;
 
+    private DateFormat dateFormat;
+
     @BeforeEach
     void setUp() throws IOException {
         InputStream in = Resources.getResourceAsStream("mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
         sqlSession = sqlSessionFactory.openSession();
         userMapper = sqlSession.getMapper(UserMapper.class);
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     @AfterEach
@@ -57,6 +64,15 @@ class UserMapperTest {
     public void deleteTest() {
         int result = userMapper.delete(1L);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void findByParamsTest() throws ParseException {
+        Date date = dateFormat.parse("1995-1-1");
+        String name = "%" + "j" + "%";
+        List<User> userList = userMapper.findByParams(name, date.getTime());
+        assertNotNull(userList);
+        userList.forEach(e -> System.out.println(e.toString()));
     }
 
 }

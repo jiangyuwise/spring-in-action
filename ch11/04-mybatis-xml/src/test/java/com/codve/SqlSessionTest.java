@@ -54,6 +54,21 @@ public class SqlSessionTest {
         String statement = namespace + ".insert";
         int result = sqlSession.insert(statement, user);
         assertEquals(1, result);
+
+        assertTrue(user.getId() > 0);
+        System.out.println(user.toString());
+    }
+
+    @Test
+    public void insertAfter() throws ParseException {
+        Date date = dateFormat.parse("1995-08-07");
+        User user = new User("James", date.getTime());
+        String statement = namespace + ".insertAfter";
+        int result = sqlSession.insert(statement, user);
+        assertEquals(1, result);
+
+        assertTrue(user.getId() > 0);
+        System.out.println(user.toString());
     }
 
     @Test
