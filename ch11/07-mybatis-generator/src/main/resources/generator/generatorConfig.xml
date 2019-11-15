@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="MySqlContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="'"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <commentGenerator type="com.codve.generator.CommentGenerator">
+            <property name="suppressDate" value="true"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/pro_spring"
+                        userId="spring"
+                        password="qZF08fDcidSRJ2CI"/>
+
+        <javaModelGenerator targetPackage="com.codve.model" targetProject="src/main/java">
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--<sqlMapGenerator targetPackage="com.codve.mapper" targetProject="src/main/resources"/>-->
+
+        <!--<javaClientGenerator type="XMLMAPPER" targetPackage="com.codve.mapper" targetProject="src/main/java"/>-->
+
+        <table tableName="user"/>
+        <table tableName="article"/>
+
+
+    </context>
+</generatorConfiguration>
