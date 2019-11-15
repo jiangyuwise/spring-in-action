@@ -1,6 +1,8 @@
-package com.codve;
+package com.codve.service;
 
 import com.codve.model.User;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -21,4 +23,10 @@ public interface UserService {
      * @return int
      */
     int insert(User user);
+
+    /**
+     * 查找所有用户
+     * @return List<User>
+     */
+    List<User> findAll();
 }

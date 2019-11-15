@@ -1,17 +1,14 @@
 package com.codve.mapper;
 
 import com.codve.model.User;
-import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.Param;
 
-import static org.apache.ibatis.type.JdbcType.BIGINT;
-import static org.apache.ibatis.type.JdbcType.VARCHAR;
+import java.util.List;
 
 /**
  * @author admin
  * @date 2019/11/13 16:06
  */
-@Component
 public interface UserMapper {
     /**
      * 根据 id 查找用户
@@ -26,4 +23,10 @@ public interface UserMapper {
      * @return int
      */
     int insert(User user);
+
+    /**
+     * 查找所有用户
+     * @return List<User>
+     */
+    List<User> findAll();
 }

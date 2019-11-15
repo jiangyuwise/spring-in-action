@@ -1,16 +1,15 @@
 package com.codve;
 
-import com.codve.mapper.UserMapper;
 import com.codve.model.User;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
+import com.codve.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,5 +39,11 @@ class UserServiceImplTest {
         User user = new User("Hello", System.currentTimeMillis());
         userService.insert(user);
         assertTrue(user.getId() > 0);
+    }
+
+    @Test
+    public void findAllTest() {
+        List<User> userList = userService.findAll();
+        assertTrue(userList.size() > 0);
     }
 }

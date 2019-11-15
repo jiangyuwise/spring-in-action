@@ -1,9 +1,12 @@
-package com.codve;
+package com.codve.serviceImpl;
 
 import com.codve.mapper.UserMapper;
 import com.codve.model.User;
+import com.codve.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -27,5 +30,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int insert(User user) {
         return userMapper.insert(user);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userMapper.findAll();
     }
 }
