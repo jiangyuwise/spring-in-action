@@ -1,6 +1,7 @@
 package com.codve;
 
 import com.codve.mapper.UserMapper;
+import com.codve.model.User;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -27,6 +28,8 @@ class UserMapperTest {
 
     private static SqlSessionFactory sqlSessionFactory;
 
+    private static DataUtil dataUtil;
+
     private SqlSession sqlSession;
 
     private UserMapper userMapper;
@@ -35,12 +38,16 @@ class UserMapperTest {
     static void setUpAll() throws IOException {
         InputStream in = Resources.getResourceAsStream("mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
+        dataUtil = new DataUtil();
+        dataUtil.addScript("data.sql");
     }
 
     @BeforeEach
-    void setUp(){
+    void setUp() throws IOException {
         sqlSession = sqlSessionFactory.openSession();
         userMapper = sqlSession.getMapper(UserMapper.class);
+        dataUtil.setSqlSession(sqlSession);
+        dataUtil.init();
     }
     
     @AfterEach
@@ -66,7 +73,14 @@ class UserMapperTest {
 
     @Test
     public void findByIdTest() {
-        User user = userMapper.findById(2L);
+        User user = userMapper.findById(1L);
+        assertNotNull(user);
+        System.out.println(user.toString());
+    }
+
+    @Test
+    public void findById2Test() {
+        User user = userMapper.findById2(1L);
         assertNotNull(user);
         System.out.println(user.toString());
     }
@@ -74,13 +88,13 @@ class UserMapperTest {
     @Test
     public void findAllTest() {
         List<User> userList = userMapper.findAll();
-        assertNotNull(userList);
+        assertTrue(userList.size() > 0);
         userList.forEach(e -> System.out.println(e.toString()));
     }
 
     @Test
     public void updateTest() {
-        User user = userMapper.findById(2L);
+        User user = userMapper.findById(1L);
         user.setName("Robot");
         int result = userMapper.update(user);
         assertEquals(1, result);
@@ -88,7 +102,8 @@ class UserMapperTest {
 
     @Test
     public void deleteTest() {
-        int result = userMapper.delete(1L);
+        User user = userMapper.findById(1L);
+        int result = userMapper.delete(user);
         assertEquals(1, result);
     }
 
