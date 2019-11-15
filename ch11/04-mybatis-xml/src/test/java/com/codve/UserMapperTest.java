@@ -61,6 +61,14 @@ class UserMapperTest {
     public void insertTest() {
         User user = new User("Robot", new Date().getTime());
         userMapper.insert(user);
+        assertTrue(user.getId() > 0);
+    }
+
+    @Test
+    public void insertAfterTest() {
+        User user = new User("Robot", new Date().getTime());
+        userMapper.insertAfter(user);
+        assertTrue(user.getId() > 0);
     }
 
     @Test
@@ -76,71 +84,71 @@ class UserMapperTest {
     }
 
     @Test
-    public void findByParamsTest() throws ParseException {
+    public void findTest() throws ParseException {
         Date date = dateFormat.parse("1995-1-1");
         String name = "%" + "j" + "%";
-        List<User> userList = userMapper.findByParams(name, date.getTime());
+        User user = new User(name, date.getTime());
+        List<User> userList = userMapper.find(user);
         assertTrue(userList.size() > 0);
         userList.forEach(e -> System.out.println(e.toString()));
     }
 
-    /**
-     * 动态 SQL, 使用 if 拼接
-     */
     @Test
-    public void selectIf1() {
-        List<User> userList = userMapper.selectIf(null, null);
+    public void find1() {
+        List<User> userList = userMapper.find(null);
         assertTrue(userList.size() > 0);
     }
 
     @Test
-    public void selectIf2() {
-        List<User> userList = userMapper.selectIf("j", null);
+    public void find2() {
+        List<User> userList = userMapper.find(new User("j", null));
         assertTrue(userList.size() > 0);
     }
 
     @Test
-    public void selectIf3() throws ParseException {
+    public void find3() throws ParseException {
         Date date = dateFormat.parse("1996-1-1");
-        List<User> userList = userMapper.selectIf("j", date.getTime());
+        List<User> userList = userMapper.find(new User("j", date.getTime()));
         assertTrue(userList.size() > 0);
     }
 
     @Test
-    public void selectIf4() throws ParseException {
+    public void find4() throws ParseException {
         Date date = dateFormat.parse("2001-1-1");
-        List<User> userList = userMapper.selectIf("j", date.getTime());
+        List<User> userList = userMapper.find(new User("j", date.getTime()));
         assertEquals(0, userList.size());
     }
 
     @Test
-    public void updateIf1() {
+    public void update() {
         User user = userMapper.findById(1L);
-        user.setName("Helen");
-        int result = userMapper.updateIf(user);
+        User tmp = new User();
+        tmp.setId(user.getId());
+        tmp.setName("Helen");
+        int result = userMapper.update(tmp);
         assertEquals(1, result);
     }
 
     // insert into `user` ( ) values ( )
     @Test
-    public void insertIf1() {
+    public void insert1() {
         User user = new User();
-        userMapper.insertIf(user);
+        userMapper.insert(user);
     }
 
     // insert into `user` ( `user_name` ) values ( ? )
     @Test
-    public void insertIf2() {
+    public void insert2() {
         User user = new User();
         user.setName("Hank");
-        userMapper.insertIf(user);
+        userMapper.insert(user);
     }
 
     // insert into `user` ( `user_name` , `user_birthday` ) values ( ? , ? )
     @Test
-    public void insertIf3() {
+    public void insert3() {
         User user = new User("James", System.currentTimeMillis());
-        userMapper.insertIf(user);
+        userMapper.insert(user);
         assertTrue(user.getId() > 0);
     }
 
@@ -237,7 +245,6 @@ class UserMapperTest {
         assertEquals(2, userMapper.insertForeach(userList));
     }
 
-    // 批量插入并批量返回主键, 仅支持 mysql
     @Test
     public void insertForeach2() {
         List<User> userList = new ArrayList<>();
@@ -254,11 +261,10 @@ class UserMapperTest {
     @Test
     public void updateForeach() {
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", 1L);
         params.put("user_name", "哈哈哈");
         params.put("user_birthday", System.currentTimeMillis());
 
-        int result = userMapper.updateForeach(params);
+        int result = userMapper.updateForeach(params, 1L);
         assertEquals(1, result);
     }
 

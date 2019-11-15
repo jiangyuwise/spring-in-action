@@ -7,9 +7,14 @@
         <result column="user_name" property="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="user_birthday" property="birthday" javaType="java.lang.Long" jdbcType="BIGINT"/>
     </resultMap>
-    
+
     <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into `user`(`user_name`, `user_birthday`) values (#{name}, #{birthday})
+        insert into `user` (
+        <if test="name != null"> `user_name` </if>
+        <if test="birthday != null">, `user_birthday`</if>)
+        values (
+        <if test="name != null">#{name}</if>
+        <if test="birthday != null">, #{birthday}</if>)
     </insert>
 
     <insert id="insertAfter" parameterType="User">
@@ -32,40 +37,22 @@
         select count(*) from `user`;
     </select>
 
-    <select id="findByParams" resultMap="userMap">
-        select * from `user` where `user_name` like #{name} and `user_birthday` >= #{birthday}
-    </select>
-
-    <update id="update" parameterType="User">
-        update `user` set `user_name` = #{name}, `user_birthday` = #{birthday} where `user_id` = #{id}
-    </update>
-
-    <delete id="delete" parameterType="User">
-        delete from `user` where `user_id` = #{id}
-    </delete>
-
-    <select id="selectIf" resultMap="userMap">
+    <select id="find" resultMap="userMap">
         select * from `user` where 1 = 1
         <if test="name != null and name != ''">and `user_name` like concat('%', #{name}, '%')</if>
         <if test="birthday != null">and `user_birthday` >= #{birthday}</if>
     </select>
 
-    <update id="updateIf" parameterType="User">
+    <update id="update" parameterType="User">
         update `user` set
         <if test="name != null and name != ''">`user_name` = #{name}, </if>
-        <if test="birthday != 0">`user_birthday` = #{birthday}, </if>
+        <if test="birthday != null">`user_birthday` = #{birthday}, </if>
         `user_id` = #{id} where `user_id` = #{id}
     </update>
 
-    <insert id="insertIf" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into `user` (
-          <if test="name != null"> `user_name` </if>
-          <if test="birthday != null">, `user_birthday`</if>)
-        values (
-          <if test="name != null">#{name}</if>
-          <if test="birthday != null">, #{birthday}</if>
-        )
-    </insert>
+    <delete id="delete" parameterType="User">
+        delete from `user` where `user_id` = #{id}
+    </delete>
 
     <select id="selectChoose" resultMap="userMap">
         select * from `user` where 1 = 1
@@ -97,7 +84,7 @@
 
     <select id="selectForeach" resultMap="userMap">
         select * from `user` where `user_id` in
-        <foreach collection="idList"  open="(" close=")" separator=", " item="id" index="i">
+        <foreach collection="idList"  open="(" close=")" separator=", " item="id" index="index">
             #{id}
         </foreach>
     </select>
@@ -118,10 +105,10 @@
 
     <update id="updateForeach">
         update `user` set
-        <foreach collection="_parameter" item="val" index="key" separator=", ">
+        <foreach collection="params" item="val" index="key" separator=", ">
             ${key} = #{val}
         </foreach>
-        where `user_id` = #{user_id}
+        where `user_id` = #{id}
     </update>
 
 </mapper>

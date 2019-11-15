@@ -97,15 +97,6 @@ public class SqlSessionTest {
     }
 
     @Test
-    public void updateTest2() {
-        User user = new User("Juniper", null);
-        user.setId(1L);
-        assertThrows(PersistenceException.class, () -> {
-            sqlSession.update(namespace + ".update", user);
-        });
-    }
-
-    @Test
     public void deleteTest() {
         User user = sqlSession.selectOne(namespace + ".findById", 1L);
         sqlSession.delete(namespace + ".delete", user);
