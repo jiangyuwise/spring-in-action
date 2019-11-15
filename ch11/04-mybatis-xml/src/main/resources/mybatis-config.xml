@@ -6,7 +6,7 @@
         <setting name="logImpl" value="SLF4J"/>
     </settings>
     <typeAliases>
-        <package name="com.codve"/>
+        <package name="com.codve.model"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">

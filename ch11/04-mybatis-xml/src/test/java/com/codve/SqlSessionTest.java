@@ -1,5 +1,7 @@
 package com.codve;
 
+import com.codve.model.User;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,9 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author admin
@@ -31,6 +31,8 @@ public class SqlSessionTest {
 
     private static String namespace = "com.codve.mapper.UserMapper";
 
+    private static DataUtil dataUtil;
+
     private SqlSession sqlSession;
 
     private DateFormat dateFormat;
@@ -39,12 +41,16 @@ public class SqlSessionTest {
     static void setUpAll() throws IOException {
         InputStream in = Resources.getResourceAsStream("mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(in);
+        dataUtil = new DataUtil();
+        dataUtil.addScript("data.sql");
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         sqlSession = sqlSessionFactory.openSession();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dataUtil.setSqlSession(sqlSession);
+        dataUtil.init();
     }
 
     @AfterEach
@@ -91,14 +97,23 @@ public class SqlSessionTest {
     }
 
     @Test
+    public void updateTest2() {
+        User user = new User("Juniper", null);
+        user.setId(1L);
+        assertThrows(PersistenceException.class, () -> {
+            sqlSession.update(namespace + ".update", user);
+        });
+    }
+
+    @Test
     public void deleteTest() {
-        User user = sqlSession.selectOne(namespace + ".findById", 22L);
-        sqlSession.delete(namespace + ".delete", user.getId());
+        User user = sqlSession.selectOne(namespace + ".findById", 1L);
+        sqlSession.delete(namespace + ".delete", user);
     }
 
     @Test
     public void findAllTest() {
-        List<User> userList = sqlSession.selectList(namespace + ".findAll");
+        List<User> userList = sqlSession.selectList("findAll");
         assertNotNull(userList);
         userList.forEach(e-> System.out.println(e.toString()));
     }

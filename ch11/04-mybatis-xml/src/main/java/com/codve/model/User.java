@@ -1,4 +1,4 @@
-package com.codve;
+package com.codve.model;
 
 
 import lombok.Data;

@@ -40,8 +40,8 @@
         update `user` set `user_name` = #{name}, `user_birthday` = #{birthday} where `user_id` = #{id}
     </update>
 
-    <delete id="delete" parameterType="Long">
-        delete from `user` where `user_id` = #{userId}
+    <delete id="delete" parameterType="User">
+        delete from `user` where `user_id` = #{id}
     </delete>
 
     <select id="selectIf" resultMap="userMap">

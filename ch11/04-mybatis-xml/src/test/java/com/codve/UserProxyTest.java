@@ -1,6 +1,7 @@
 package com.codve;
 
 import com.codve.mapper.UserMapper;
+import com.codve.model.User;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

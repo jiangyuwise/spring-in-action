@@ -1,6 +1,6 @@
 package com.codve.mapper;
 
-import com.codve.User;
+import com.codve.model.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,6 +12,11 @@ import java.util.Map;
  */
 public interface UserMapper {
 
+    /**
+     * 插入新用户, 并返回主键
+     * @param user user
+     * @return 插入的行数
+     */
     int insert(User user);
 
     int insertAfter(User user);

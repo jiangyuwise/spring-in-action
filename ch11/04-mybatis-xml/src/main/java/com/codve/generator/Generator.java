@@ -6,6 +6,6 @@ package com.codve.generator;
  */
 public class Generator {
     public static void main(String[] args) {
-        
+
     }
 }
