@@ -1,4 +1,4 @@
-package com.codve;
+package com.codve.config;
 
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -24,9 +24,9 @@ import java.io.IOException;
  * @date 2019/11/13 15:37
  */
 @Configuration
-@ComponentScan
+@ComponentScan(basePackages = "com.codve")
 @EnableTransactionManagement
-@MapperScan("com.codve.mapper")
+@MapperScan("com.codve.dao")
 public class AppConfig {
 
     @Bean

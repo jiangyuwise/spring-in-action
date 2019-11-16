@@ -1,6 +1,6 @@
-package com.codve.service.Impl;
+package com.codve.service.impl;
 
-import com.codve.AppConfig;
+import com.codve.config.AppConfig;
 import com.codve.model.User;
 import com.codve.service.UserService;
 import org.junit.jupiter.api.Test;

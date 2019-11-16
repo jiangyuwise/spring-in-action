@@ -1,4 +1,4 @@
-package com.codve.mapper;
+package com.codve.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.codve.model.User;
@@ -11,6 +11,10 @@ import java.util.List;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-//    @Select("select * from `user`")
+
+    /**
+     * 查找所有用户
+     * @return List<User>
+     */
     List<User> selectAll();
 }

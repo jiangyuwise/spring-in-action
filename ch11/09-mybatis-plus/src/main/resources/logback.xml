@@ -10,5 +10,5 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="com.codve.mapper" level="trace"/>
+    <logger name="com.codve.dao" level="trace"/>
 </configuration>

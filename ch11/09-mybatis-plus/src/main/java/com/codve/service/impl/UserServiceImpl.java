@@ -1,6 +1,6 @@
-package com.codve.service.Impl;
+package com.codve.service.impl;
 
-import com.codve.mapper.UserMapper;
+import com.codve.dao.UserMapper;
 import com.codve.model.User;
 import com.codve.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
