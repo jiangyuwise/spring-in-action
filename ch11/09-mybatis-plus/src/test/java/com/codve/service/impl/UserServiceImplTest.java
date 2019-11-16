@@ -36,5 +36,4 @@ class UserServiceImplTest {
         List<User> userList = userService.selectAll();
         assertTrue(userList.size() > 0);
     }
-
 }
