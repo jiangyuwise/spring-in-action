@@ -1,7 +1,7 @@
 package com.codve.service.impl;
 
 import com.codve.model.User;
-import com.codve.repository.slave1.UserRepository;
+import com.codve.repository.spring.UserRepository;
 import com.codve.service.Slave1UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

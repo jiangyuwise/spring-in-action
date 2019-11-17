@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author admin
  * @date 2019/11/17 21:25
  */
-@Repository("springUserRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.id=:id")

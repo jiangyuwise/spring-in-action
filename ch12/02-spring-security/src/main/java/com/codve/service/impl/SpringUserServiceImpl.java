@@ -15,7 +15,7 @@ import java.util.Optional;
  * @date 2019/11/17 16:46
  */
 @Service
-public class SpringUserServiceImpl implements UserService{
+public class SpringUserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
