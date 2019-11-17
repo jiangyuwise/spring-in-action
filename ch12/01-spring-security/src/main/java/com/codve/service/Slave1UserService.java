@@ -9,7 +9,7 @@ import java.util.List;
  * @author admin
  * @date 2019/11/16 23:10
  */
-public interface UserService {
+public interface Slave1UserService {
 
     /**
      * 根据 id 查找用户

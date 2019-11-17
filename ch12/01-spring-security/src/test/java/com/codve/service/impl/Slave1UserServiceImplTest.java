@@ -1,32 +1,30 @@
-package com.codve.dao;
+package com.codve.service.impl;
 
-import com.codve.dao.spring.UserMapper;
 import com.codve.model.User;
+import com.codve.service.Slave1UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author admin
- * @date 2019/11/16 23:12
+ * @date 2019/11/17 16:52
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class UserMapperTest {
+class Slave1UserServiceImplTest {
 
     @Autowired
-    private UserMapper userMapper;
+    private Slave1UserService userService;
 
     @Test
-    public void selectListTest() {
-        List<User> userList = userMapper.selectList(null);
-        assertTrue(userList.size() > 0);
+    public void selectByIdTest() {
+        User user = userService.getById(1L);
+        assertNotNull(user);
     }
 
 }
