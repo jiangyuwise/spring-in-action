@@ -5,6 +5,7 @@ import com.codve.model.User;
 import com.codve.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,5 +31,17 @@ public class SpringUserServiceImpl implements UserService{
     @Override
     public List<User> listAll() {
         return userMapper.selectList(null);
+    }
+
+    @Override
+    @Transactional
+    public User getById2(Long id) {
+        User user = userMapper.selectById2(id);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

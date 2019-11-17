@@ -9,10 +9,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 /**
  * @author admin
@@ -23,6 +26,7 @@ import javax.sql.DataSource;
 public class SpringDataSourceConfig {
 
     static final String PACKAGE = "com.codve.dao.spring";
+    static final String MAPPERS = "classpath:mapper/*.xml";
 
     @Bean("springDataSourceProperties")
     @Primary
@@ -46,10 +50,13 @@ public class SpringDataSourceConfig {
 
     @Bean("springSqlSessionFactory")
     @Primary
-    public MybatisSqlSessionFactoryBean sqlSessionFactoryBean(@Qualifier("springDataSource") DataSource dataSource) {
+    public MybatisSqlSessionFactoryBean sqlSessionFactoryBean(@Qualifier("springDataSource") DataSource dataSource) throws IOException {
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setTypeAliasesPackage("com.codve.model");
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources(MAPPERS);
+        factoryBean.setMapperLocations(resources);
         return factoryBean;
     }
 }

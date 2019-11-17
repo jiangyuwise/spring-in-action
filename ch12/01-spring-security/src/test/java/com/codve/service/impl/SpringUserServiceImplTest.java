@@ -27,4 +27,17 @@ class SpringUserServiceImplTest {
         assertNotNull(user);
     }
 
+    @Test
+    public void selectByIdTest2() {
+        new Thread(() -> {
+            User user = userService.getById2(1L);
+            assertNotNull(user);
+        }).start();
+        new Thread(() -> {
+            User user = userService.getById2(1L);
+            assertNotNull(user);
+        }).start();
+        userService.getById2(1L);
+    }
+
 }

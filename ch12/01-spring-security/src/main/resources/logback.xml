@@ -11,4 +11,5 @@
     </root>
 
     <logger name="com.codve.dao" level="trace"/>
+    <logger name="com.alibaba.druid" level="debug"/>
 </configuration>

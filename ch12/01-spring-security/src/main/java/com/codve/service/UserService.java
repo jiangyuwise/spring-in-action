@@ -23,4 +23,11 @@ public interface UserService {
      * @return List<user>
      */
     List<User> listAll();
+
+    /**
+     * 根据 id 查找用户, 并睡眠 300ms
+     * @param id id
+     * @return user
+     */
+    User getById2(Long id);
 }
