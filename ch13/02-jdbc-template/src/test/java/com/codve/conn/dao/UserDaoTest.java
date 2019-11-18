@@ -95,6 +95,6 @@ class UserDaoTest {
 
     @Test
     public void saveWithArticle2Test() {
-        userDao.saveWithArticle(user, article);
+        userDao.saveWithArticle2(user, article);
     }
 }
