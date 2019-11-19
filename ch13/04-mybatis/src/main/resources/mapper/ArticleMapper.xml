@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codve.mybatis.dao.ArticleMapper">
+    <resultMap id="articleMap" type="Article">
+        <id column="article_id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="article_title" property="title" javaType="String" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" javaType="Long" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into article (
+        <trim suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="title != null">article_title,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>)
+        values (
+        <trim suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>)
+    </insert>
+
+    <delete id="deleteById">
+        delete from article where article_id = #{id}
+    </delete>
+
+    <update id="update">
+        update article set
+        <trim suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="title != null">article_title = #{title},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            article_id = #{id}
+        </trim>
+        where article_id = #{id}
+    </update>
+
+    <select id="findById" resultMap="articleMap">
+        select * from article where article_id = #{id}
+    </select>
+
+    <select id="find" resultMap="articleMap">
+        select * from article
+        <where>
+            <if test="article != null">
+                <if test="article.id != null">or article_id = #{article.id}</if>
+                <if test="article.userId != null">and user_id = #{article.userId}</if>
+                <if test="article.title != null">and article_title like %${article.title}%</if>
+            </if>
+            <if test="start != null">and create_time gte #{start} </if>
+            <if test="end != null">and create_time lte #{end}</if>
+            <if test="userIds != null">and user_id in
+                <foreach collection="userId" item="userId" open="(" close=")">
+                    #{userId}
+                </foreach>
+            </if>
+        </where>
+        <if test="orderBy != null">
+            <choose>
+                <when test="orderBy == 1">order by article_id asc</when>
+                <when test="orderBy == 2">order by article_id desc</when>
+                <when test="orderBy == 3">order by user_id asc</when>
+            </choose>
+        </if>
+    </select>
+</mapper>
