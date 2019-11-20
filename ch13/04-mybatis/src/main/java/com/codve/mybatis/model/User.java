@@ -1,6 +1,7 @@
 package com.codve.mybatis.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
  * @date 2019/11/13 16:10
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     private Long id;
@@ -19,11 +21,6 @@ public class User {
     private Long birthday;
 
     public User() {
-    }
-
-    public User(String name, Long birthday) {
-        this.name = name;
-        this.birthday = birthday;
     }
 
     @Override
