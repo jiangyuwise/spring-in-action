@@ -2,16 +2,20 @@ package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.model.User;
 import com.codve.mybatis.service.UserService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author admin
@@ -22,45 +26,56 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UserServiceImplTest {
 
     @Autowired
+    private DataSource dataSource;
+
+    private static ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+
+    @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private DataInitializer initializer;
-//
-//    @BeforeEach
-//    void setUp() {
-//        initializer.init();
-//    }
+    @BeforeAll
+    static void setUpAll() {
+        populator.addScript(new ClassPathResource("data/user.sql"));
+    }
 
-    @Test
-    public void userServiceTest() {
-        assertNotNull(userService);
+    @BeforeEach
+    void setUp() {
+        populator.execute(dataSource);
     }
 
     @Test
-    public void findByIdTest() {
-        User tmp = userService.findById(1L);
-        assertNotNull(tmp);
-
-        tmp = userService.findById(2L);
-        assertNotNull(tmp);
+    void save() {
+        assertEquals(1, userService.save(new User()));
     }
 
     @Test
-    public void findByIdCacheTest() {
-        User tmp = userService.findById(4L);
-        System.out.println(tmp.toString());
+    void deleteById() {
+        assertEquals(1, userService.deleteById(1L));
     }
 
     @Test
-    public void deleteTest() {
-        User tmp = userService.findById(1L);
-        userService.deleteById(1L);
+    void update() {
+        User user = new User();
+        user.setId(1L);
+        user.setName("hello");
+        assertEquals(1, userService.update(user));
     }
 
     @Test
-    public void findComplexTest() {
-        List<User> userList = userService.findComplex(null, 0L, null, null, null);
+    public void findById() {
+        User user = userService.findById(0L);
+        assertNull(user);
+
+        user = userService.findById(1L);
+        assertNotNull(user);
+        assertEquals(1L, user.getId());
+    }
+
+    @Test
+    public void find() {
+        User user = new User();
+        user.setName("j");
+        List<User> userList = userService.find(user, 0L, null, null, 4, 1, 1);
         assertTrue(userList.size() > 0);
 
     }

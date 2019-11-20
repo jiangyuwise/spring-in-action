@@ -3,9 +3,9 @@ package com.codve.mybatis.service.impl;
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.model.User;
 import com.codve.mybatis.service.UserService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -27,20 +27,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "user")
+    public int save(User user) {
+        return userMapper.save(user);
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        return userMapper.deleteById(id);
+    }
+
+    @Override
+    public int update(User user) {
+        return userMapper.update(user);
+    }
+
+    @Override
     public User findById(Long id) {
         return userMapper.findById(id);
     }
 
     @Override
-    @CacheEvict(value = "user")
-    public void deleteById(Long id) {
-        userMapper.deleteById(id);
-    }
-
-    @Override
-    @Cacheable(value = "user")
-    public List<User> findComplex(User user, Long start, Long end, List<Long> ids, Integer orderBy) {
-        return userMapper.selectComplex(user, start, end, ids, orderBy);
+    public List<User> find(User user,
+                           Long start,
+                           Long end,
+                           List<Long> userIds,
+                           Integer orderBy,
+                           int pageNum,
+                           int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return userMapper.find(user, start, end, userIds, orderBy);
     }
 }

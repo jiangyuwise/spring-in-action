@@ -48,12 +48,12 @@
             <if test="article != null">
                 <if test="article.id != null">or article_id = #{article.id}</if>
                 <if test="article.userId != null">and user_id = #{article.userId}</if>
-                <if test="article.title != null">and article_title like %${article.title}%</if>
+                <if test="article.title != null">and article_title like concat('%', #{article.title}, '%')</if>
             </if>
-            <if test="start != null">and create_time gte #{start} </if>
-            <if test="end != null">and create_time lte #{end}</if>
+            <if test="start != null">and create_time &gt;= #{start} </if>
+            <if test="end != null">and create_time &lt;= #{end}</if>
             <if test="userIds != null">and user_id in
-                <foreach collection="userId" item="userId" open="(" close=")">
+                <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
                     #{userId}
                 </foreach>
             </if>

@@ -1,7 +1,6 @@
 package com.codve.mybatis.service;
 
 import com.codve.mybatis.model.User;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +12,19 @@ import java.util.List;
 @Service
 public interface UserService {
 
+    int save(User user);
+
+    int deleteById(Long id);
+
+    int update(User user);
 
     User findById(Long id);
 
-    void deleteById(Long id);
-
-    List<User> findComplex(User user, Long start, Long end, List<Long> ids, Integer orderBy);
+    List<User> find(User user,
+                    Long start,
+                    Long end,
+                    List<Long> userIds,
+                    Integer orderBy,
+                    int pageNum,
+                    int pageSize);
 }

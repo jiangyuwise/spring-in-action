@@ -7,15 +7,37 @@
         <result column="user_birthday" property="birthday" javaType="java.lang.Long" jdbcType="BIGINT"/>
     </resultMap>
 
-    <select id="findById" resultMap="userMap">
-        select * from user where user_id = #{id}
-    </select>
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into user (
+        <trim suffixOverrides=",">
+            <if test="name != null">user_name,</if>
+            <if test="birthday != null">user_birthday,</if>
+        </trim>)
+        values (
+        <trim suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="birthday != null">#{birthday},</if>
+        </trim>)
+    </insert>
+
+    <update id="update">
+        update user set
+            <if test="name != null">user_name = #{name},</if>
+            <if test="birthday != null">user_birthday = #{birthday},</if>
+            user_id = #{id}
+        where user_id = #{id}
+    </update>
 
     <delete id="deleteById">
         delete from user where user_id = #{id}
     </delete>
 
-    <select id="selectComplex" resultMap="userMap">
+    <select id="findById" resultMap="userMap">
+        select * from user where user_id = #{id}
+    </select>
+
+
+    <select id="find" resultMap="userMap">
         SELECT * FROM user
         <where>
             <if test="user != null">
@@ -23,8 +45,9 @@
             </if>
             <if test="start != null">and user_birthday &gt;= #{start}</if>
             <if test="end != null">and user_birthday &lt;=  #{end}</if>
-            <if test="ids != null">and user_id in
-                <foreach collection="ids" open="(" close=")" separator=", " item="id"> #{id}
+            <if test="userIds != null">and user_id in
+                <foreach collection="userIds" open="(" close=")" separator=", " item="id">
+                  #{id}
                 </foreach>
             </if>
             <if test="orderBy != null">

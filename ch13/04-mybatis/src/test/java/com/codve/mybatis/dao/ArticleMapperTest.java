@@ -1,7 +1,10 @@
 package com.codve.mybatis.dao;
 
 import com.codve.mybatis.model.Article;
+import com.codve.mybatis.model.User;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,8 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
+import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,6 +119,18 @@ class ArticleMapperTest {
     void deleteById() {
         int result = articleMapper.deleteById(1L);
         assertEquals(1, result);
+    }
+
+    @Test
+    void deleteByIdInMax() {
+        int result = articleMapper.deleteById(1024L);
+        assertEquals(0, result);
+    }
+
+    @Test
+    void deleteByIdNegative() {
+        int result = articleMapper.deleteById(-1L);
+        assertEquals(0, result);
     }
 
     @Test
@@ -227,5 +244,69 @@ class ArticleMapperTest {
         article.setTitle("C");
         userList = articleMapper.find(article, null, null, null, null);
         assertTrue(userList.size() > 0);
+    }
+
+    @Test
+    void findByArticleTwoParam() {
+        PageHelper.startPage(1, 1);
+        article = new Article();
+        article.setId(1L);
+        article.setUserId(1L);
+        List<Article> articles = articleMapper.find(article, null, null, null, null);
+        assertTrue(articles.size() > 0);
+        PageInfo<Article> pageInfo = new PageInfo<>(articles);
+        assertTrue(pageInfo.getSize() > 0);
+
+        PageHelper.startPage(1, 1);
+        article = new Article();
+        article.setId(1L);
+        article.setTitle("C");
+        articles = articleMapper.find(article, null, null, null, null);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        article = new Article();
+        article.setUserId(1L);
+        article.setTitle("C");
+        articles = articleMapper.find(article, null, null, null, null);
+        assertTrue(articles.size() > 0);
+    }
+
+    @Test
+    void findByOneParam() {
+        PageHelper.startPage(1, 1);
+        List<Article> articles = articleMapper.find(null, 0L, null, null, null);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        articles = articleMapper.find(null, null, System.currentTimeMillis(), null, null);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        articles = articleMapper.find(null, null, null, Arrays.asList(1L, 2L), null);
+        assertTrue(articles.size() > 0);
+    }
+
+    @Test
+    void findByTwoParam() {
+        article = new Article();
+        article.setUserId(1L);
+        article.setTitle("c");
+        article.setCreateTime(System.currentTimeMillis());
+        PageHelper.startPage(1, 1);
+        List<Article> articles = articleMapper.find(article, 0L, null, null, 1);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        articles = articleMapper.find(article, null, System.currentTimeMillis(), null, 2);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        articles = articleMapper.find(article, null, null, Arrays.asList(1L, 2L), 3);
+        assertTrue(articles.size() > 0);
+
+        PageHelper.startPage(1, 1);
+        articles = articleMapper.find(article, 0L, null, Arrays.asList(1L, 2L), 4);
+        assertTrue(articles.size() > 0);
     }
 }
