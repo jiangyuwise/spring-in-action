@@ -1,6 +1,7 @@
 package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.model.Article;
+import com.codve.mybatis.model.User;
 import com.codve.mybatis.service.ArticleService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,8 +81,7 @@ class ArticleServiceImplTest {
 
     @Test
     void find() {
-        List<Article> articleList = articleService.find(null, 0L, System.currentTimeMillis(),
-                null, 2, 1, 1);
-        assertTrue(articleList.size() > 0);
+        articleService.find(article, 0L, null, Arrays.asList(1L), 1,
+                1, 1);
     }
 }

@@ -1,7 +1,9 @@
 package com.codve.mybatis.dao;
 
 import com.codve.mybatis.model.Article;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
  * @author admin
  * @date 2019/11/19 17:22
  */
+@Repository
 public interface ArticleMapper {
 
     int save(Article article);

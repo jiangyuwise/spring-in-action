@@ -109,13 +109,12 @@ public class JacksonTest {
 
         User user1 = new User();
         BeanUtils.copyProperties(user, user1);
-
         template.opsForList().rightPushAll("key", user, user1);
 
 //        User saved = (User) template.opsForList().leftPop("key");
 
         List<User> userList = (List) template.opsForList().range("key", 0, -1);
-        userList.forEach(e -> System.out.println(e.toString()));
+        template.delete("key");
     }
 
     @Test
@@ -138,7 +137,7 @@ public class JacksonTest {
 
         template.opsForValue().set("key", user);
         User saved = (User) template.opsForValue().get("key");
-        System.out.println(saved);
+        template.delete("key");
 
     }
 
