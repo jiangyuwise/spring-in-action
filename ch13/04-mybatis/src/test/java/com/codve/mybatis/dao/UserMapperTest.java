@@ -153,7 +153,7 @@ class UserMapperTest {
     @Test
     void findNoParam() {
         PageHelper.startPage(1, 2);
-        List<User> userList = userMapper.find(null, null, null, null, null);
+        List<User> userList = userMapper.find(null, null, null, null, 1);
         assertTrue(userList.size() > 0);
         PageInfo<User> pageInfo = new PageInfo<>(userList);
         assertTrue(pageInfo.getSize() > 0);
