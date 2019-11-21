@@ -72,11 +72,22 @@ class UserServiceImplTest {
     }
 
     @Test
+    public void findByIdAop() {
+        User user = userService.findById(100L);
+    }
+
+    @Test
     public void find() {
         User user = new User();
         user.setName("j");
-        List<User> userList = userService.find(user, 0L, null, null, 4, 1, 1);
+        List<User> userList = userService.find(user, 1L, null, null, 4, 1, 1);
         assertTrue(userList.size() > 0);
+    }
 
+    @Test
+    public void findAop() {
+        User user = new User();
+        user.setName("j");
+        List<User> userList = userService.find(user, 1L, -1L, null, 4, 1, 1);
     }
 }
