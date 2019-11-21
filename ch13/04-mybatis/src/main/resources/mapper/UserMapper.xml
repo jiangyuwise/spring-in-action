@@ -50,14 +50,14 @@
                   #{id}
                 </foreach>
             </if>
-            <if test="orderBy != null">
-                <choose>
-                    <when test="orderBy == 1"> order by user_id asc</when>
-                    <when test="orderBy == 2"> order by user_id desc</when>
-                    <when test="orderBy == 3"> order by user_birthday asc</when>
-                    <when test="orderBy == 4"> order by user_birthday desc</when>
-                </choose>
-            </if>
         </where>
+        <if test="orderBy != null">
+            <choose>
+                <when test="orderBy == 1"> order by user_id asc</when>
+                <when test="orderBy == 2"> order by user_id desc</when>
+                <when test="orderBy == 3"> order by user_birthday asc</when>
+                <when test="orderBy == 4"> order by user_birthday desc</when>
+            </choose>
+        </if>
     </select>
 </mapper>
