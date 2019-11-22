@@ -7,6 +7,7 @@ import com.codve.mybatis.util.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Valid
     public R findById(@PathVariable("id") Long id) {
         User user = userService.findById(id);
         if (user == null) {

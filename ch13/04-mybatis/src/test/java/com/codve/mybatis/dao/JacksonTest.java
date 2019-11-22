@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.BeanUtils;
@@ -78,6 +77,7 @@ public class JacksonTest {
         String savedStr = template.opsForValue().get("key");
         User savedUser = om.readValue(savedStr, User.class);
         System.out.println(savedUser);
+        template.delete("key");
     }
 
     @Test

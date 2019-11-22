@@ -1,8 +1,6 @@
 package com.codve.mybatis.dao;
 
 import com.codve.mybatis.model.Article;
-import com.codve.mybatis.model.User;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +14,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 

@@ -9,7 +9,9 @@ public enum EX {
     // 列表查询失败
     FIND_FAILED(301, "列表查询失败"),
     // 用户未找到
-    USER_NOT_FOUND(404, "用户未找到")
+    USER_NOT_FOUND(404, "用户未找到"),
+
+    FILE_EMPTY(500, "文件不能为空")
     ;
 
     private int code;

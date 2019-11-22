@@ -14,8 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author admin
@@ -60,7 +59,8 @@ public class RedisTest {
 
         String savedStr = redisTemplate.opsForValue().get(user.getName());
         User savedUser = objectMapper.readValue(savedStr, User.class);
-        assertTrue(user.getBirthday().equals(savedUser.getBirthday()));
+        assertEquals(user.getBirthday(),savedUser.getBirthday());
+        redisTemplate.delete(user.getName());
     }
 
     @Test
@@ -69,5 +69,6 @@ public class RedisTest {
 
         User savedUser = (User) objectRedisTemplate.opsForValue().get(user.getName());
         assertTrue(savedUser.getId() > 0);
+        objectRedisTemplate.delete(user.getName());
     }
 }

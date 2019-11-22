@@ -1,5 +1,6 @@
 package com.codve.mybatis.controller;
 
+import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.exception.UserNotFoundException;
 import com.codve.mybatis.util.R;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +17,6 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public R userNotFound(UserNotFoundException e) {
-        String message = "账号不存在";
-        log.error(message, e);
-        return R.error(404, message);
+        return R.error(EX.USER_NOT_FOUND);
     }
 }

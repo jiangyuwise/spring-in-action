@@ -1,7 +1,6 @@
 package com.codve.mybatis.dao;
 
 import com.codve.mybatis.model.Article;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
