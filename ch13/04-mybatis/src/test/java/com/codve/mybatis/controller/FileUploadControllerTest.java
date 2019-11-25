@@ -3,6 +3,7 @@ package com.codve.mybatis.controller;
 import com.codve.mybatis.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.io.FileSystemResource;
 
 import java.util.Arrays;
 
@@ -27,6 +28,13 @@ class FileUploadControllerTest {
         User user2 = new User();
         BeanUtils.copyProperties(user, user2);
 //        System.out.println(user.toString());
+    }
+
+    @Test
+    void FileSystemResourceTest() {
+        String path = "./upload";
+        FileSystemResource uploadDir = new FileSystemResource(path);
+
     }
 
 }
