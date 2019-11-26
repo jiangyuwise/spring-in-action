@@ -1,6 +1,8 @@
 package com.codve.mybatis.dao;
 
+import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.User;
+import com.codve.mybatis.model.query.UserQuery;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,17 +15,13 @@ import java.util.List;
 @Repository
 public interface UserMapper {
 
-    int save(User user);
+    int save(UserDO userDO);
 
     int deleteById(Long userId);
 
-    int update(User user);
+    int update(UserDO userDO);
 
-    User findById(Long id);
+    UserDO findById(Long id);
 
-    List<User> find(@Param("user") User user,
-                             @Param("start") Long start,
-                             @Param("end")  Long end,
-                             @Param("userIds") List<Long> userIds,
-                             @Param("orderBy")  Integer orderBy);
+    List<UserDO> find(UserQuery userQuery);
 }
