@@ -1,7 +1,7 @@
 package com.codve.mybatis.dao;
 
-import com.codve.mybatis.model.Article;
-import org.apache.ibatis.annotations.Param;
+import com.codve.mybatis.model.data.object.ArticleDO;
+import com.codve.mybatis.model.query.ArticleQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,17 +13,15 @@ import java.util.List;
 @Repository
 public interface ArticleMapper {
 
-    int save(Article article);
+    int save(ArticleDO articleDO);
 
     int deleteById(Long id);
 
-    int update(Article article);
+    int update(ArticleDO articleDO);
 
-    Article findById(Long id);
+    ArticleDO findById(Long id);
 
-    List<Article> find(@Param("article") Article article,
-                       @Param("start") Long start,
-                       @Param("end") Long end,
-                       @Param("userIds") List<Long> userIds,
-                       @Param("orderBy") Integer orderBy);
+    List<ArticleDO> find(ArticleQuery articleQuery);
+
+    int count(ArticleQuery articleQuery);
 }

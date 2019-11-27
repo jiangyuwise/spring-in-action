@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.codve.mybatis.dao.UserMapper">
-    <resultMap id="userMap" type="User">
+    <resultMap id="userMap" type="UserDO">
         <id column="user_id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
         <result column="user_name" property="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="user_birthday" property="birthday" javaType="java.lang.Long" jdbcType="BIGINT"/>
     </resultMap>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <sql id="fields">
+        user_id, user_name, user_birthday
+    </sql>
+
+    <insert id="save" parameterType="UserDO" useGeneratedKeys="true" keyProperty="id">
         insert into user (
         <trim suffixOverrides=",">
             <if test="name != null">user_name,</if>
@@ -20,7 +24,7 @@
         </trim>)
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="UserDO">
         update user set
             <if test="name != null">user_name = #{name},</if>
             <if test="birthday != null">user_birthday = #{birthday},</if>
@@ -28,24 +32,22 @@
         where user_id = #{id}
     </update>
 
-    <delete id="deleteById">
+    <delete id="deleteById" parameterType="Long">
         delete from user where user_id = #{id}
     </delete>
 
-    <select id="findById" resultMap="userMap">
-        select * from user where user_id = #{id}
+    <select id="findById" parameterType="Long" resultMap="userMap">
+        select <include refid="fields"/> from user where user_id = #{id}
     </select>
 
 
-    <select id="find" resultMap="userMap">
-        SELECT * FROM user
+    <select id="find" parameterType="com.codve.mybatis.model.query.UserQuery" resultMap="userMap">
+        SELECT <include refid="fields"/> FROM user
         <where>
-            <if test="user != null">
-                <if test="user.name != null"> and user_name like concat('%', #{user.name}, '%')</if>
-            </if>
+            <if test="name != null"> and user_name like concat('%', #{name}, '%')</if>
             <if test="start != null">and user_birthday &gt;= #{start}</if>
             <if test="end != null">and user_birthday &lt;=  #{end}</if>
-            <if test="userIds != null">and user_id in
+            <if test="userIds != null and userIds.size > 0">and user_id in
                 <foreach collection="userIds" open="(" close=")" separator=", " item="id">
                   #{id}
                 </foreach>
@@ -59,5 +61,19 @@
                 <when test="orderBy == 4"> order by user_birthday desc</when>
             </choose>
         </if>
+    </select>
+
+    <select id="count" parameterType="com.codve.mybatis.model.query.UserQuery" resultType="Integer">
+        SELECT count(1) FROM user
+        <where>
+            <if test="name != null"> and user_name like concat('%', #{name}, '%')</if>
+            <if test="start != null">and user_birthday &gt;= #{start}</if>
+            <if test="end != null">and user_birthday &lt;=  #{end}</if>
+            <if test="userIds != null and userIds.size > 0">and user_id in
+                <foreach collection="userIds" open="(" close=")" separator=", " item="id">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
     </select>
 </mapper>

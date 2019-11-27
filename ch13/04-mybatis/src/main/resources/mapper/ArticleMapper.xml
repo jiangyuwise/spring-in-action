@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.codve.mybatis.dao.ArticleMapper">
-    <resultMap id="articleMap" type="Article">
+    <resultMap id="articleMap" type="ArticleDO">
         <id column="article_id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
         <result column="user_id" property="userId" javaType="java.lang.Long" jdbcType="BIGINT"/>
         <result column="article_title" property="title" javaType="String" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" javaType="Long" jdbcType="BIGINT"/>
     </resultMap>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <sql id="fields">
+        article_id, user_id, article_title, create_time
+    </sql>
+
+    <insert id="save" parameterType="ArticleDO" useGeneratedKeys="true" keyProperty="id">
         insert into article (
         <trim suffixOverrides=",">
             <if test="userId != null">user_id,</if>
@@ -23,11 +27,11 @@
         </trim>)
     </insert>
 
-    <delete id="deleteById">
+    <delete id="deleteById" parameterType="Long" >
         delete from article where article_id = #{id}
     </delete>
 
-    <update id="update">
+    <update id="update" parameterType="ArticleDO" >
         update article set
         <trim suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
@@ -38,18 +42,16 @@
         where article_id = #{id}
     </update>
 
-    <select id="findById" resultMap="articleMap">
-        select * from article where article_id = #{id}
+    <select id="findById" parameterType="Long" resultMap="articleMap">
+        select <include refid="fields"/> from article where article_id = #{id}
     </select>
 
-    <select id="find" resultMap="articleMap">
-        select * from article
+    <select id="find" parameterType="com.codve.mybatis.model.query.ArticleQuery" resultMap="articleMap" >
+        select <include refid="fields"/> from article
         <where>
-            <if test="article != null">
-                <if test="article.id != null">or article_id = #{article.id}</if>
-                <if test="article.userId != null">and user_id = #{article.userId}</if>
-                <if test="article.title != null">and article_title like concat('%', #{article.title}, '%')</if>
-            </if>
+            <if test="id != null">or article_id = #{id}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="title != null">and article_title like concat('%', #{title}, '%')</if>
             <if test="start != null">and create_time &gt;= #{start} </if>
             <if test="end != null">and create_time &lt;= #{end}</if>
             <if test="userIds != null">and user_id in
@@ -65,5 +67,21 @@
                 <when test="orderBy == 3">order by user_id asc</when>
             </choose>
         </if>
+    </select>
+
+    <select id="count" parameterType="com.codve.mybatis.model.query.ArticleQuery" resultType="Integer" >
+        select count(1) from article
+        <where>
+            <if test="id != null">or article_id = #{id}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="title != null">and article_title like concat('%', #{title}, '%')</if>
+            <if test="start != null">and create_time &gt;= #{start} </if>
+            <if test="end != null">and create_time &lt;= #{end}</if>
+            <if test="userIds != null">and user_id in
+                <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                    #{userId}
+                </foreach>
+            </if>
+        </where>
     </select>
 </mapper>
