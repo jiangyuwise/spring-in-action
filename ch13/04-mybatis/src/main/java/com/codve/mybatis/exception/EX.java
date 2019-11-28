@@ -6,12 +6,18 @@ package com.codve.mybatis.exception;
  */
 public enum EX {
 
+    // 成功
+    e0(0, "success"),
+
     // 列表查询失败
     FIND_FAILED(301, "列表查询失败"),
+
     // 用户未找到
     USER_NOT_FOUND(404, "用户未找到"),
 
-    FILE_EMPTY(500, "文件不能为空")
+    FILE_EMPTY(500, "文件不能为空"),
+
+    e302(302, "添加失败"),
     ;
 
     private int code;
