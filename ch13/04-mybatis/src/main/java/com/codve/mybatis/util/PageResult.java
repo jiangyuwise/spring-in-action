@@ -1,5 +1,6 @@
 package com.codve.mybatis.util;
 
+import com.github.pagehelper.Page;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,11 +15,14 @@ public class PageResult<T> implements Serializable {
 
     private List<T> list;
 
-    private Integer total;
+    private long total;
 
-    public PageResult(List<T> list, Integer total) {
+    public PageResult(List<T> list) {
         this.list = list;
-        this.total = total;
+        if (list instanceof Page) {
+            Page page = (Page) list;
+            this.total = page.getTotal();
+        }
     }
 
     public List<T> getList() {
@@ -29,7 +33,7 @@ public class PageResult<T> implements Serializable {
         this.list = list;
     }
 
-    public Integer getTotal() {
+    public long getTotal() {
         return total;
     }
 
