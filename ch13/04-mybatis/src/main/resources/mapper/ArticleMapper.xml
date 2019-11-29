@@ -42,7 +42,7 @@
         where article_id = #{id}
     </update>
 
-    <select id="findById" parameterType="Long" resultMap="articleMap">
+    <select id="findById" parameterType="Long" resultMap="articleMap" flushCache="true">
         select <include refid="fields"/> from article where article_id = #{id}
     </select>
 

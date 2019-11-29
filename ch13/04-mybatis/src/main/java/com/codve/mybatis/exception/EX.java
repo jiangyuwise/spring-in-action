@@ -7,10 +7,17 @@ package com.codve.mybatis.exception;
 public enum EX {
 
     // 成功
-    e0(0, "success"),
+    E_0(0, "success"),
 
     // 列表查询失败
-    FIND_FAILED(301, "列表查询失败"),
+    E_301(301, "添加失败"),
+
+    E_302(302, "删除失败"),
+
+    E_303(303, "修改失败"),
+
+    E_304(304, "无数据"),
+
 
     // 用户未找到
     USER_NOT_FOUND(404, "用户未找到"),
