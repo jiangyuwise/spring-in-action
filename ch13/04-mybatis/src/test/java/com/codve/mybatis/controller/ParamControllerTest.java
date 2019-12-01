@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -109,6 +110,19 @@ class ParamControllerTest {
                 .andReturn().getResponse().getContentAsString(UTF_8);
         UserVO userVO = mapper.readValue(result, UserVO.class);
         assertNotNull(userVO);
+        log.error(userVO.toString());
+    }
+
+    @Test
+    void paramTest3() throws Exception {
+        String result = mockMvc.perform(get("/param/user")
+                .param("name", " james ")
+                .param("birthday", Long.toString(System.currentTimeMillis())))
+                .andReturn().getResponse().getContentAsString(UTF_8);
+        UserVO userVO = mapper.readValue(result, UserVO.class);
+        assertNotNull(userVO);
+        assertEquals("james", userVO.getName());
+
         log.error(userVO.toString());
     }
 }
