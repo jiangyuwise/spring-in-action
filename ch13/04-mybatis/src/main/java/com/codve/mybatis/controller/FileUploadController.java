@@ -1,7 +1,7 @@
 package com.codve.mybatis.controller;
 
 import com.codve.mybatis.exception.EX;
-import com.codve.mybatis.util.R;
+import com.codve.mybatis.util.CommonResult;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -25,23 +25,23 @@ public class FileUploadController {
     public static final Resource UPLOAD_DIR = new FileSystemResource("./upload");
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    public R upload(@RequestParam MultipartFile file) throws IOException {
+    public CommonResult upload(@RequestParam MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            return R.error(EX.FILE_EMPTY);
+            return CommonResult.error(EX.E_1301);
         }
         save(file);
-        return R.success();
+        return CommonResult.success();
     }
 
     @PostMapping(value = "/multi/upload", consumes = "multipart/form-data")
-    public R upload(@RequestParam MultipartFile[] files) throws IOException {
+    public CommonResult upload(@RequestParam MultipartFile[] files) throws IOException {
         if (files == null || files.length == 0) {
-            return R.error(EX.FILE_EMPTY);
+            return CommonResult.error(EX.E_1301);
         }
         for (MultipartFile file : files) {
             save(file);
         }
-        return R.success();
+        return CommonResult.success();
     }
 
     @GetMapping("/download/{filename}")

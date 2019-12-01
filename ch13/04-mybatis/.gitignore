@@ -2,6 +2,7 @@ HELP.md
 .gradle
 build/
 upload/
+upload-test/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
