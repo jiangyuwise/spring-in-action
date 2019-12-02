@@ -1,6 +1,10 @@
 package com.codve.mybatis.dao;
 
-import com.codve.mybatis.model.User;
+import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.query.UserQuery;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,8 +39,6 @@ class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    private User user;
-
     @BeforeAll
     static void setUpAll() {
         populator.addScript(new ClassPathResource("data/user.sql"));
@@ -45,38 +47,38 @@ class UserMapperTest {
     @BeforeEach
     void setUp() {
         populator.execute(dataSource);
-        user = new User();
-        user.setName("James");
-        user.setBirthday(System.currentTimeMillis());
     }
 
     @Test
     void saveNonParamTest() {
-        user = new User();
-        assertEquals(1, userMapper.save(user));
+        UserDO userDO = new UserDO();
+        assertEquals(1, userMapper.save(userDO));
     }
 
     @Test
     void saveOneParamTest() {
-        user = new User();
-        user.setId(1L);
-        assertEquals(1, userMapper.save(user));
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        assertEquals(1, userMapper.save(userDO));
 
-        user = new User();
-        user.setName("喜洋洋");
-        assertEquals(1, userMapper.save(user));
+        userDO = new UserDO();
+        userDO.setName("喜洋洋");
+        assertEquals(1, userMapper.save(userDO));
 
-        user = new User();
-        user.setBirthday(1L);
-        assertEquals(1, userMapper.save(user));
+        userDO = new UserDO();
+        userDO.setBirthday(1L);
+        assertEquals(1, userMapper.save(userDO));
     }
 
     @Test
     void saveTest() {
-        assertEquals(1, userMapper.save(user));
+        UserDO userDO = new UserDO();
+        userDO.setName("喜洋洋");
+        userDO.setBirthday(System.currentTimeMillis());
+        assertEquals(1, userMapper.save(userDO));
 
-        user.setId(1L);
-        assertEquals(1, userMapper.save(user));
+        userDO.setId(1L);
+        assertEquals(1, userMapper.save(userDO));
     }
 
     @Test
@@ -87,128 +89,173 @@ class UserMapperTest {
 
     @Test
     void updateNoParam() {
-        user = new User();
-        assertEquals(0, userMapper.update(user));
+        UserDO userDO = new UserDO();
+        assertEquals(0, userMapper.update(userDO));
     }
 
     @Test
     void updateOneParam() {
-        user = new User();
-        user.setId(1L);
-        assertEquals(1, userMapper.update(user));
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        assertEquals(1, userMapper.update(userDO));
 
-        user = new User();
-        user.setName("小苹果");
-        assertEquals(0, userMapper.update(user));
+        userDO = new UserDO();
+        userDO.setName("小苹果");
+        assertEquals(0, userMapper.update(userDO));
 
-        user = new User();
-        user.setBirthday(1L);
-        assertEquals(0, userMapper.update(user));
+        userDO = new UserDO();
+        userDO.setBirthday(1L);
+        assertEquals(0, userMapper.update(userDO));
     }
 
     @Test
     void updateTwoParam() {
-        user = new User();
-        user.setId(1L);
-        user.setName("你好");
-        assertEquals(1, userMapper.update(user));
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setName("你好");
+        assertEquals(1, userMapper.update(userDO));
 
-        user = new User();
-        user.setId(1L);
-        user.setBirthday(0L);
-        assertEquals(1, userMapper.update(user));
+        userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setBirthday(0L);
+        assertEquals(1, userMapper.update(userDO));
 
-        user = new User();
-        user.setName("你好");
-        user.setBirthday(0L);
-        assertEquals(0, userMapper.update(user));
+        userDO = new UserDO();
+        userDO.setName("你好");
+        userDO.setBirthday(0L);
+        assertEquals(0, userMapper.update(userDO));
     }
 
     @Test
     void updateTest() {
-        user = new User();
-        user.setId(10L);
-        user.setName("哈哈");
-        user.setBirthday(0L);
-        assertEquals(0, userMapper.update(user));
+        UserDO userDO = new UserDO();
+        userDO.setId(10L);
+        userDO.setName("哈哈");
+        userDO.setBirthday(0L);
+        assertEquals(0, userMapper.update(userDO));
 
-        user.setId(1L);
-        assertEquals(1, userMapper.update(user));
+        userDO.setId(1L);
+        assertEquals(1, userMapper.update(userDO));
     }
 
     @Test
     void findByIdTest() {
-        user = userMapper.findById(10L);
-        assertNull(user);
+        UserDO userDO = userMapper.findById(10L);
+        assertNull(userDO);
 
-        user = userMapper.findById(1L);
-        assertNotNull(user);
-        assertEquals(1L, user.getId());
+        userDO = userMapper.findById(1L);
+        assertNotNull(userDO);
+        assertEquals(1L, userDO.getId());
     }
 
     @Test
     void findNoParam() {
         PageHelper.startPage(1, 2);
-        List<User> userList = userMapper.find(null, null, null, null, 1);
-        assertTrue(userList.size() > 0);
-        PageInfo<User> pageInfo = new PageInfo<>(userList);
+        List<UserDO> userDOList = userMapper.find(new UserQuery());
+        assertTrue(userDOList.size() > 0);
+        PageInfo<UserDO> pageInfo = new PageInfo<>(userDOList);
         assertTrue(pageInfo.getSize() > 0);
     }
 
     @Test
     void findUserParam() {
-        user = new User();
-        user.setId(0L);
-        user.setBirthday(0L);
+        UserQuery query = new UserQuery();
+        query.setStart(0L);
         PageHelper.startPage(1, 2);
-        List<User> userList = userMapper.find(user, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        List<UserDO> userDOList = userMapper.find(query);
+        assertTrue(userDOList.size() > 0);
 
         PageHelper.startPage(1, 2);
-        user.setName("j");
-        userList = userMapper.find(user, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        query.setName("j");
+        userDOList = userMapper.find(query);
+        assertTrue(userDOList.size() > 0);
     }
 
     @Test
     void findTwoParam() {
-        user = new User();
-        user.setName("j");
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
         PageHelper.startPage(1, 2);
-        List<User> userList = userMapper.find(user, 0L, null, null, 1);
-        assertTrue(userList.size() > 0);
+        List<UserDO> userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
 
-        userList = userMapper.find(user, null, -1L, null, null);
-        assertEquals(0, userList.size());
+        userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setEnd(-1L);
+        userDOList = userMapper.find(userQuery);
+        assertEquals(0, userDOList.size());
 
+        userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setUserIds(Arrays.asList(1L, 2L, 3L));
+        userQuery.setOrderBy(2);
         PageHelper.startPage(1, 2);
-        userList = userMapper.find(user, null, null, Arrays.asList(1L, 2L), 2);
-        assertTrue(userList.size() > 0);
+        userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
 
+        userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setStart(0L);
+        userQuery.setEnd(System.currentTimeMillis());
+        userQuery.setOrderBy(3);
         PageHelper.startPage(1, 2);
-        userList = userMapper.find(null, 0L, System.currentTimeMillis(), null, 3);
-        assertTrue(userList.size() > 0);
+        userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
 
+        userQuery = new UserQuery();
+        userQuery.setEnd(System.currentTimeMillis());
+        userQuery.setUserIds(Arrays.asList(1L, 2L));
+        userQuery.setOrderBy(4);
         PageHelper.startPage(1, 2);
-        userList = userMapper.find(null, null, System.currentTimeMillis(), Arrays.asList(1L, 2L), 4);
-        assertTrue(userList.size() > 0);
+        userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
     }
 
     @Test
     void findThreeParam() {
-        user = new User();
-        user.setName("j");
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setStart(0L);
+        userQuery.setEnd(System.currentTimeMillis());
+        userQuery.setOrderBy(2);
         PageHelper.startPage(1, 2);
-        List<User> userList = userMapper.find(user, 0L, System.currentTimeMillis(), null, 2);
-        assertTrue(userList.size() > 0);
+        List<UserDO> userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
     }
 
     @Test
     void findTest() {
-        user.setName("j");
-        List<User> userList = userMapper.find(user, 0L, System.currentTimeMillis(),
-                Arrays.asList(1L, 2L, 3L, 4L), 3);
-        assertTrue(userList.size() > 0);
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setStart(0L);
+        userQuery.setEnd(System.currentTimeMillis());
+        userQuery.setUserIds(Arrays.asList(1L, 2L, 3L, 4L));
+        userQuery.setOrderBy(3);
+        List<UserDO> userDOList = userMapper.find(userQuery);
+        assertTrue(userDOList.size() > 0);
+    }
+
+    @Test
+    void countTest() {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
+        userQuery.setStart(0L);
+        userQuery.setEnd(System.currentTimeMillis());
+        userQuery.setUserIds(Arrays.asList(1L, 2L, 3L, 4L));
+        userQuery.setOrderBy(3);
+        int count = userMapper.count(userQuery);
+        assertTrue(count > 0);
+    }
+
+    @Test
+    void pageTest() throws JsonProcessingException {
+        PageHelper.startPage(1, 2);
+        List<UserDO> userDOList = userMapper.find(null);
+        System.out.println(userDOList.getClass().getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+        Page<UserDO> userDOPage = (Page<UserDO>) userDOList;
+        System.out.println(mapper.writeValueAsString(userDOPage));
     }
 
 }

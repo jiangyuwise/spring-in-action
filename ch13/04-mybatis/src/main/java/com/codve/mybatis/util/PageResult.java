@@ -3,7 +3,6 @@ package com.codve.mybatis.util;
 import com.github.pagehelper.Page;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
  * @date 2019/11/28 19:32
  */
 @Data
-public class PageResult<T> implements Serializable {
+public class PageResult<T> {
 
     private List<T> list;
 

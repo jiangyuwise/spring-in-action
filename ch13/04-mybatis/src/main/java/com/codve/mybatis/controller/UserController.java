@@ -6,10 +6,9 @@ import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author admin
@@ -27,16 +26,16 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public CommonResult save(@RequestBody @Validated UserVO user) {
+    public CommonResult save(@RequestBody @Valid UserVO user) {
         userService.save(UserConvert.convert(user));
         return CommonResult.success();
     }
-//
-//    @GetMapping("/delete/{id}")
-//    public R delete(@PathVariable Long id) {
-//        userService.deleteById(id);
-//        return R.success();
-//    }
+
+    @GetMapping("/delete/{id}")
+    public CommonResult delete(@PathVariable Long id) {
+        userService.deleteById(id);
+        return CommonResult.success();
+    }
 //
 //    @PostMapping("/update")
 //    public R update(@RequestBody User user) {

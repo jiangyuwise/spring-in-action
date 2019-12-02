@@ -1,7 +1,12 @@
 package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.model.User;
+import com.codve.mybatis.model.business.object.UserArticleBO;
+import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.service.UserService;
+import com.codve.mybatis.util.PageResult;
+import com.github.pagehelper.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,49 +50,82 @@ class UserServiceImplTest {
 
     @Test
     void save() {
-        assertEquals(1, userService.save(new User()));
+        assertEquals(1, userService.save(new UserDO()));
     }
 
     @Test
     void deleteById() {
         assertEquals(1, userService.deleteById(1L));
+        RuntimeException e = assertThrows(RuntimeException.class, () -> {
+            userService.deleteById(100L);
+        });
     }
 
     @Test
     void update() {
-        User user = new User();
-        user.setId(1L);
-        user.setName("hello");
-        assertEquals(1, userService.update(user));
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setName("hello");
+        assertEquals(1, userService.update(userDO));
+
+        userDO.setId(100L);
+        assertThrows(RuntimeException.class, () -> userService.update(userDO));
+    }
+//
+    @Test
+    void findById() {
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.findById(0L);
+        });
+
+        UserDO userDO = userService.findById(1L);
+        assertNotNull(userDO);
+        assertEquals(1L, userDO.getId());
     }
 
     @Test
-    public void findById() {
-        User user = userService.findById(0L);
-        assertNull(user);
+    void find() {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
 
-        user = userService.findById(1L);
-        assertNotNull(user);
-        assertEquals(1L, user.getId());
+        List<UserDO> userDOList = userService.find(userQuery, 1, 2);
+        assertTrue(userDOList.size() > 0);
+
+        PageResult<UserDO> pageResult = new PageResult<>(userDOList);
+        assertTrue(pageResult.getTotal() > 0);
+
+        userDOList = userService.find(userQuery);
+        assertTrue(userDOList.size() > 0);
+
+        userQuery.setName("xxx");
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.find(userQuery, 1, 0);
+        });
+        System.out.println(exception.getMessage());
     }
 
     @Test
-    public void findByIdAop() {
-        User user = userService.findById(100L);
+    void count() {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setName("j");
+        assertTrue(userService.count(userQuery) > 0);
+
+        userQuery.setStart(System.currentTimeMillis());
+        assertEquals(0, userService.count(userQuery));
     }
 
     @Test
-    public void find() {
-        User user = new User();
-        user.setName("j");
-        List<User> userList = userService.find(user, 1L, null, null, 4, 1, 1);
-        assertTrue(userList.size() > 0);
+    void findWithArticle() {
+        List<UserArticleBO> userList = userService.findWithArticle(null, 1, 3);
+        assertNotNull(userList);
+
+        Page page = (Page) userList;
+        assertTrue(page.getTotal() > 0);
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.findWithArticle(null, 10, 10);
+        });
     }
 
-    @Test
-    public void findAop() {
-        User user = new User();
-        user.setName("j");
-        List<User> userList = userService.find(user, 1L, -1L, null, 4, 1, 1);
-    }
 }

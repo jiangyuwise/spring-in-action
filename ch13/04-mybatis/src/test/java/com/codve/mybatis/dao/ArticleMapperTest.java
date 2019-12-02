@@ -1,6 +1,7 @@
 package com.codve.mybatis.dao;
 
-import com.codve.mybatis.model.Article;
+import com.codve.mybatis.model.data.object.ArticleDO;
+import com.codve.mybatis.model.query.ArticleQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,8 +36,6 @@ class ArticleMapperTest {
 
     private static ResourceDatabasePopulator populator;
 
-    private Article article;
-
     @BeforeAll
     static void setUpAll() {
         populator = new ResourceDatabasePopulator();
@@ -46,70 +45,70 @@ class ArticleMapperTest {
     @BeforeEach
     void setUp() {
         populator.execute(dataSource);
-        article = new Article();
-        article.setUserId(4L);
-        article.setTitle("环游世界 100 天");
-        article.setCreateTime(System.currentTimeMillis());
 
-    }
-
-    @Test
-    void save() {
-        int result= articleMapper.save(article);
-        assertTrue(result > 0);
-        assertTrue(article.getId() > 0);
     }
 
     @Test
     void saveNoParam() {
-        article = new Article();
-        assertEquals(1, articleMapper.save(article));
+        ArticleDO articleDO = new ArticleDO();
+        assertEquals(1, articleMapper.save(articleDO));
     }
 
     @Test
     void saveOneParam() {
-        article = new Article();
-        article.setId(1L);
-        assertEquals(1, articleMapper.save(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        assertEquals(1, articleMapper.save(articleDO));
 
-        article = new Article();
-        article.setUserId(1L);
-        assertEquals(1, articleMapper.save(article));
+        articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        assertEquals(1, articleMapper.save(articleDO));
 
-        article = new Article();
-        article.setTitle("嘻嘻嘻");
-        assertEquals(1, articleMapper.save(article));
+        articleDO = new ArticleDO();
+        articleDO.setTitle("嘻嘻嘻");
+        assertEquals(1, articleMapper.save(articleDO));
 
-        article = new Article();
-        article.setCreateTime(System.currentTimeMillis());
-        assertEquals(1, articleMapper.save(article));
+        articleDO = new ArticleDO();
+        articleDO.setCreateTime(System.currentTimeMillis());
+        assertEquals(1, articleMapper.save(articleDO));
     }
 
     @Test
     void saveNegativeParam() {
-        article = new Article();
-        article.setUserId(-1L);
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setUserId(-1L);
         assertThrows(RuntimeException.class, () -> {
-            articleMapper.save(article);
+            articleMapper.save(articleDO);
         });
     }
 
     @Test
     void saveTwoParam() {
-        article = new Article();
-        article.setUserId(1L);
-        article.setTitle("哈哈哈");
-        assertEquals(1, articleMapper.save(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setTitle("哈哈哈");
+        assertEquals(1, articleMapper.save(articleDO));
 
-        article = new Article();
-        article.setUserId(1L);
-        article.setCreateTime(0L);
-        assertEquals(1, articleMapper.save(article));
+        articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setCreateTime(0L);
+        assertEquals(1, articleMapper.save(articleDO));
 
-        article = new Article();
-        article.setCreateTime(0L);
-        article.setTitle("哈哈哈");
-        assertEquals(1, articleMapper.save(article));
+        articleDO = new ArticleDO();
+        articleDO.setCreateTime(0L);
+        articleDO.setTitle("哈哈哈");
+        assertEquals(1, articleMapper.save(articleDO));
+    }
+
+    @Test
+    void save() {
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setTitle("哈哈哈");
+        articleDO.setCreateTime(System.currentTimeMillis());
+        int result= articleMapper.save(articleDO);
+        assertTrue(result > 0);
+        assertTrue(articleDO.getId() > 0);
     }
 
     @Test
@@ -132,178 +131,213 @@ class ArticleMapperTest {
 
     @Test
     void updateNoParam() {
-        Article article = new Article();
-        assertEquals(0, articleMapper.update(article));
+        ArticleDO articleDO = new ArticleDO();
+        assertEquals(0, articleMapper.update(articleDO));
     }
 
     @Test
     void updateOneParam() {
-        article = new Article();
-        article.setId(1L);
-        assertEquals(1, articleMapper.update(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        assertEquals(1, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setUserId(1L);
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        assertEquals(0, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setTitle("");
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setTitle("");
+        assertEquals(0, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setCreateTime(0L);
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setCreateTime(0L);
+        assertEquals(0, articleMapper.update(articleDO));
+
     }
 
     @Test
     public void updateTwoParam() {
-        article = new Article();
-        article.setId(1L);
-        article.setUserId(10L);
-        assertEquals(1, articleMapper.update(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        articleDO.setUserId(10L);
+        assertEquals(1, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setId(1L);
-        article.setTitle("哈哈哈");
-        assertEquals(1, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        articleDO.setTitle("哈哈哈");
+        assertEquals(1, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setId(1L);
-        article.setCreateTime(1L);
-        assertEquals(1, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        articleDO.setCreateTime(1L);
+        assertEquals(1, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setUserId(1L);
-        article.setTitle("");
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setTitle("");
+        assertEquals(0, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setUserId(1L);
-        article.setCreateTime(1L);
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setCreateTime(1L);
+        assertEquals(0, articleMapper.update(articleDO));
 
-        article = new Article();
-        article.setTitle("");
-        article.setCreateTime(1L);
-        assertEquals(0, articleMapper.update(article));
+        articleDO = new ArticleDO();
+        articleDO.setTitle("");
+        articleDO.setCreateTime(1L);
+        assertEquals(0, articleMapper.update(articleDO));
     }
 
     @Test
     void update() {
-        article.setId(1L);
-        int result = articleMapper.update(article);
-        assertEquals(1, result);
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        articleDO.setUserId(1L);
+        articleDO.setTitle("哈哈");
+        articleDO.setCreateTime(System.currentTimeMillis());
+        assertEquals(1, articleMapper.update(articleDO));
     }
 
     @Test
     void findById() {
-        Article tmp = articleMapper.findById(1L);
-        assertNotNull(tmp);
-        assertTrue(tmp.getId() > 0);
+        ArticleDO articleDO = articleMapper.findById(1L);
+        assertNotNull(articleDO);
+        assertTrue(articleDO.getId() > 0);
     }
 
     @Test
     void findByIdNone() {
-        Article tmp = articleMapper.findById(8L);
-        assertNull(tmp);
+        ArticleDO articleDO = articleMapper.findById(8L);
+        assertNull(articleDO);
     }
 
     @Test
     void findNoParam() {
         PageHelper.startPage(1, 1);
-        List<Article> userList = articleMapper.find(null, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        List<ArticleDO> articleDOList = articleMapper.find(null);
+        assertTrue(articleDOList.size() > 0);
     }
 
     @Test
     void findByArticleNoParam() {
         PageHelper.startPage(1, 1);
-        List<Article> userList = articleMapper.find(new Article(), null, null, null, null);
-        assertTrue(userList.size() > 0);
+        List<ArticleDO> articleDOList = articleMapper.find(new ArticleQuery());
+        assertTrue(articleDOList.size() > 0);
     }
 
     @Test
     void findByArticleOneParam() {
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setId(1L);
-        List<Article> userList = articleMapper.find(article, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setId(1L);
+        List<ArticleDO> articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setUserId(1L);
-        userList = articleMapper.find(article, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        articleQuery = new ArticleQuery();
+        articleQuery.setUserId(1L);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setTitle("C");
-        userList = articleMapper.find(article, null, null, null, null);
-        assertTrue(userList.size() > 0);
+        articleQuery = new ArticleQuery();
+        articleQuery.setTitle("C");
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
     }
 
     @Test
     void findByArticleTwoParam() {
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setId(1L);
+        articleQuery.setUserId(1L);
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setId(1L);
-        article.setUserId(1L);
-        List<Article> articles = articleMapper.find(article, null, null, null, null);
-        assertTrue(articles.size() > 0);
-        PageInfo<Article> pageInfo = new PageInfo<>(articles);
+        List<ArticleDO> articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
+
+        PageInfo<ArticleDO> pageInfo = new PageInfo<>(articleDOList);
         assertTrue(pageInfo.getSize() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setId(1L);
+        articleQuery.setTitle("C");
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setId(1L);
-        article.setTitle("C");
-        articles = articleMapper.find(article, null, null, null, null);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setUserId(1L);
+        articleQuery.setTitle("C");
         PageHelper.startPage(1, 1);
-        article = new Article();
-        article.setUserId(1L);
-        article.setTitle("C");
-        articles = articleMapper.find(article, null, null, null, null);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
     }
 
     @Test
     void findByOneParam() {
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setStart(0L);
         PageHelper.startPage(1, 1);
-        List<Article> articles = articleMapper.find(null, 0L, null, null, null);
-        assertTrue(articles.size() > 0);
+        List<ArticleDO> articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setEnd(System.currentTimeMillis());
         PageHelper.startPage(1, 1);
-        articles = articleMapper.find(null, null, System.currentTimeMillis(), null, null);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setUserIds(Arrays.asList(1L, 2L));
         PageHelper.startPage(1, 1);
-        articles = articleMapper.find(null, null, null, Arrays.asList(1L, 2L), null);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
     }
 
     @Test
     void findByTwoParam() {
-        article = new Article();
-        article.setUserId(1L);
-        article.setTitle("c");
-        article.setCreateTime(System.currentTimeMillis());
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setUserId(1L);
+        articleQuery.setTitle("c");
         PageHelper.startPage(1, 1);
-        List<Article> articles = articleMapper.find(article, 0L, null, null, 1);
-        assertTrue(articles.size() > 0);
+        List<ArticleDO> articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setUserId(1L);
+        articleQuery.setTitle("c");
+        articleQuery.setEnd(System.currentTimeMillis());
+        articleQuery.setOrderBy(2);
         PageHelper.startPage(1, 1);
-        articles = articleMapper.find(article, null, System.currentTimeMillis(), null, 2);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setTitle("c");
+        articleQuery.setUserIds(Arrays.asList(1L, 2L));
+        articleQuery.setOrderBy(3);
         PageHelper.startPage(1, 1);
-        articles = articleMapper.find(article, null, null, Arrays.asList(1L, 2L), 3);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
 
+        articleQuery = new ArticleQuery();
+        articleQuery.setTitle("c");
+        articleQuery.setStart(0L);
+        articleQuery.setUserIds(Arrays.asList(1L, 2L));
+        articleQuery.setOrderBy(4);
         PageHelper.startPage(1, 1);
-        articles = articleMapper.find(article, 0L, null, Arrays.asList(1L, 2L), 4);
-        assertTrue(articles.size() > 0);
+        articleDOList = articleMapper.find(articleQuery);
+        assertTrue(articleDOList.size() > 0);
+    }
+
+    @Test
+    void countTest() {
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setTitle("c");
+        articleQuery.setStart(0L);
+        articleQuery.setUserIds(Arrays.asList(1L, 2L));
+        articleQuery.setOrderBy(4);
+        int count = articleMapper.count(articleQuery);
+        assertTrue(count > 0);
     }
 }

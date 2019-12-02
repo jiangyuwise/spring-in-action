@@ -1,7 +1,10 @@
 package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.model.Article;
+import com.codve.mybatis.model.data.object.ArticleDO;
+import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.service.ArticleService;
+import com.codve.mybatis.util.PageResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,8 +37,6 @@ class ArticleServiceImplTest {
     @Autowired
     private ArticleService articleService;
 
-    private Article article;
-
     @BeforeAll
     static void setUpAll() {
         populator.addScript(new ClassPathResource("data/article.sql"));
@@ -43,41 +45,72 @@ class ArticleServiceImplTest {
     @BeforeEach
     void setUp() {
         populator.execute(dataSource);
-        article = new Article();
-        article.setUserId(10L);
-        article.setTitle("Hello, world");
-        article.setCreateTime(System.currentTimeMillis());
     }
 
     @Test
     void save() {
-        assertEquals(1, articleService.save(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setUserId(10L);
+        articleDO.setTitle("7 天环游地球");
+        articleDO.setCreateTime(System.currentTimeMillis());
+
+        assertEquals(1, articleService.save(articleDO));
     }
 
     @Test
     void deleteById() {
         assertEquals(1, articleService.deleteById(1L));
+
+        assertThrows(RuntimeException.class, () -> {
+            articleService.deleteById(100L);
+        });
     }
 
     @Test
     void update() {
-        article.setId(1L);
-        assertEquals(1, articleService.update(article));
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setId(1L);
+        assertEquals(1, articleService.update(articleDO));
+
+        articleDO.setId(100L);
+        assertThrows(RuntimeException.class, () -> {
+            articleService.update(articleDO);
+        });
     }
 
     @Test
     void findById() {
-        article = articleService.findById(1L);
-        assertNotNull(article);
-        assertEquals(1L, article.getId());
+        ArticleDO articleDO = articleService.findById(1L);
+        assertNotNull(articleDO);
+        assertEquals(1L, articleDO.getId());
 
-        article = articleService.findById(10L);
-        assertNull(article);
+        assertThrows(RuntimeException.class, () -> {
+            articleService.findById(100L);
+        });
     }
 
     @Test
     void find() {
-        articleService.find(article, 0L, null, Arrays.asList(1L), 1,
-                1, 1);
+        ArticleQuery query = new ArticleQuery();
+        List<ArticleDO> articleDOList = articleService.find(query, 1, 2);
+        assertTrue(articleDOList.size() > 0);
+
+        PageResult<ArticleDO> pageResult = new PageResult<>(articleDOList);
+        assertTrue(pageResult.getTotal() > 0);
+
+        articleDOList = articleService.find(query);
+        assertTrue(articleDOList.size() > 0);
+
+        query.setStart(System.currentTimeMillis());
+
+        assertThrows(RuntimeException.class, () -> {
+            articleService.find(query, 1, 2);
+        });
+    }
+
+    @Test
+    void count() {
+        ArticleQuery query = new ArticleQuery();
+        assertTrue(articleService.count(query) > 0);
     }
 }

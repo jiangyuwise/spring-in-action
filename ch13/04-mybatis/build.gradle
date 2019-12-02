@@ -33,7 +33,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'
 	compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
-	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

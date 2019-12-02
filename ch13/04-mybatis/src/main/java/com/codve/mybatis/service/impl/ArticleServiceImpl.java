@@ -1,23 +1,23 @@
 package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.dao.ArticleMapper;
-import com.codve.mybatis.model.Article;
+import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.data.object.ArticleDO;
+import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.service.ArticleService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.codve.mybatis.util.ExceptionUtil.exception;
 
 /**
  * @author admin
  * @date 2019/11/20 10:40
  */
 @Service
-@CacheConfig(cacheNames = "ArticleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
 
     private ArticleMapper articleMapper;
@@ -28,34 +28,58 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @CacheEvict(allEntries = true)
-    public int save(Article article) {
-        return articleMapper.save(article);
+    public int save(ArticleDO articleDO) {
+        int result = articleMapper.save(articleDO);
+        if (result != 1) {
+            exception(EX.E_301);
+        }
+        return result;
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     public int deleteById(Long id) {
-        return articleMapper.deleteById(id);
+        int result = articleMapper.deleteById(id);
+        if (result != 1) {
+            exception(EX.E_302);
+        }
+        return result;
     }
 
     @Override
-    @CacheEvict(allEntries = true)
-    public int update(Article article) {
-        return articleMapper.update(article);
+    public int update(ArticleDO articleDO) {
+        int result = articleMapper.update(articleDO);
+        if (result != 1) {
+            exception(EX.E_303);
+        }
+        return result;
     }
 
     @Override
-    @Cacheable(unless = "#result == null")
-    public Article findById(Long id) {
-        return articleMapper.findById(id);
+    public ArticleDO findById(Long id) {
+        ArticleDO articleDO = articleMapper.findById(id);
+        if (articleDO == null) {
+            exception(EX.E_304);
+        }
+        return articleDO;
     }
 
     @Override
-    @Cacheable(unless = "#result.size() == 0")
-    public List<Article> find(Article article, Long start, Long end, List<Long> userIds, Integer orderBy,
-                              int pageNum, int pageSize) {
+    public List<ArticleDO> find(ArticleQuery articleQuery, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        return articleMapper.find(article, start, end, userIds, orderBy);
+        List<ArticleDO> articleDoList = articleMapper.find(articleQuery);
+        if (articleDoList.size() == 0) {
+            exception(EX.E_304);
+        }
+        return articleDoList;
+    }
+
+    @Override
+    public List<ArticleDO> find(ArticleQuery articleQuery) {
+        return find(articleQuery, 1, 20);
+    }
+
+    @Override
+    public int count(ArticleQuery articleQuery) {
+        return articleMapper.count(articleQuery);
     }
 }

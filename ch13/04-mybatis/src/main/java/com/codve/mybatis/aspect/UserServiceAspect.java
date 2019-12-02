@@ -27,6 +27,11 @@ public class UserServiceAspect {
         log.warn("after invoke UserService.findById({})", id);
     }
 
+    @AfterThrowing(value = "findByIdPointcut(id)", argNames = "id")
+    public void afterThrowingFindById(Long id) {
+        log.warn("throws a exception when invoke findById({})", id);
+    }
+
     @Around("execution (* com.codve.mybatis.service.UserService.findById(..))")
     public Object aroundFindById(ProceedingJoinPoint joinPoint) throws Throwable {
         log.error("start findById");

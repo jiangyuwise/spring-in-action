@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/result")
 public class ResultController {
-
     private UserMapper userMapper;
 
     @Autowired
@@ -35,7 +34,7 @@ public class ResultController {
 
     @GetMapping("/error")
     public CommonResult error() {
-        return CommonResult.error(EX.e302);
+        return CommonResult.error(EX.E_302);
     }
 
     @GetMapping("/single")
@@ -46,8 +45,8 @@ public class ResultController {
     @GetMapping("/list")
     public CommonResult list() {
         PageHelper.startPage(1, 2);
-        List<UserDO> userDOList = userMapper.find(null);
-        PageResult<UserDO> pageResult = new PageResult<>(userDOList);
+        List<UserDO> userDoList = userMapper.find(null);
+        PageResult<UserDO> pageResult = new PageResult<>(userDoList);
         return CommonResult.success(pageResult);
     }
 

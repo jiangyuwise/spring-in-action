@@ -1,9 +1,22 @@
 spring:
+
+  devtools:
+    restart:
+      poll-interval: 4s
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+
   datasource:
     url: jdbc:mysql://localhost:3306/pro_spring?useSSL=true&useUnicode=true&characterEncoding=utf8
     username: spring
     password: qZF08fDcidSRJ2CI
     type: com.alibaba.druid.pool.DruidDataSource
+
+    druid:
+      filters: slf4j
 
   redis:
     database: 0
