@@ -1,6 +1,5 @@
 package com.codve.mybatis.convert;
 
-import com.codve.mybatis.model.business.object.UserBO;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserCreateQuery;
 import com.codve.mybatis.model.query.UserUpdateQuery;

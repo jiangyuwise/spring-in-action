@@ -1,7 +1,10 @@
 package com.codve.mybatis.service;
 
+import com.codve.mybatis.model.business.object.ArticleBO;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.query.ArticleQuery;
+import com.codve.mybatis.model.query.UserQuery;
+import com.codve.mybatis.util.PageResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +57,13 @@ public interface ArticleService {
      * @return int
      */
     int count(ArticleQuery articleQuery);
+
+
+    /**
+     * 根据条件查找用户及其文章
+     * @param userQuery 查询条件
+     * @return List<ArticleBO>
+     */
+    PageResult<ArticleBO> unionFind(UserQuery userQuery);
 
 }

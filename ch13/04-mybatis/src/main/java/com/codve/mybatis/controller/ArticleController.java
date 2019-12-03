@@ -2,10 +2,12 @@ package com.codve.mybatis.controller;
 
 import com.codve.mybatis.convert.ArticleConvert;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.business.object.ArticleBO;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.query.ArticleCreateQuery;
 import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.model.query.ArticleUpdateQuery;
+import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.vo.ArticleVO;
 import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.util.CommonResult;
@@ -70,6 +72,12 @@ public class ArticleController {
         }
         PageResult<ArticleVO> pageResult = ArticleConvert.convert(articleDoList);
         return CommonResult.success(pageResult);
+    }
+
+    @GetMapping("/union/find")
+    public CommonResult<PageResult<ArticleBO>> unionFind(@RequestBody(required = false) @Validated UserQuery userQuery) {
+        PageResult<ArticleBO> result = articleService.unionFind(userQuery);
+        return CommonResult.success(result);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.codve.mybatis.model.query;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Min;
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package com.codve.mybatis.model.data.object;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**

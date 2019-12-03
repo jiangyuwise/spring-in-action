@@ -1,17 +1,26 @@
 package com.codve.mybatis.service.impl;
 
+import com.codve.mybatis.convert.ArticleConvert;
+import com.codve.mybatis.convert.UserConvert;
 import com.codve.mybatis.dao.ArticleMapper;
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.business.object.ArticleBO;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.ArticleQuery;
+import com.codve.mybatis.model.query.UserQuery;
+import com.codve.mybatis.model.vo.ArticleVO;
 import com.codve.mybatis.service.ArticleService;
+import com.codve.mybatis.util.PageResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codve.mybatis.util.ExceptionUtil.exception;
 
@@ -93,5 +102,42 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int count(ArticleQuery articleQuery) {
         return articleMapper.count(articleQuery);
+    }
+
+    @Override
+    public PageResult<ArticleBO> unionFind(UserQuery userQuery) {
+        PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
+        List<UserDO> userDoList = userMapper.find(userQuery);
+        PageInfo<UserDO> pageInfo = new PageInfo<>(userDoList);
+        if (userDoList.size() == 0) {
+            exception(EX.E_1104);
+        }
+        List<Long> userIdList = userDoList.stream().map(UserDO::getId)
+                .collect(Collectors.toList());
+
+        // 查找文章总数
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setUserIds(userIdList);
+        int articleCount = articleMapper.count(articleQuery);
+
+        // 查出所有文章
+        PageHelper.startPage(1, articleCount);
+        List<ArticleDO> articleDoList = articleMapper.find(articleQuery);
+
+        List<ArticleBO> articleBoList = new ArrayList<>();
+        for (UserDO userDO : userDoList) {
+            ArticleBO articleBo = new ArticleBO();
+            articleBo.setUserVO(UserConvert.convert(userDO));
+            List<ArticleVO> articleList = articleDoList.stream()
+                    .filter(e -> e.getUserId().equals(userDO.getId()))
+                    .map(ArticleConvert::convert)
+                    .collect(Collectors.toList());
+            articleBo.setArticleVoList(articleList);
+            articleBoList.add(articleBo);
+        }
+        PageResult<ArticleBO> result = new PageResult<>();
+        result.setList(articleBoList);
+        result.setTotal(pageInfo.getTotal());
+        return result;
     }
 }
