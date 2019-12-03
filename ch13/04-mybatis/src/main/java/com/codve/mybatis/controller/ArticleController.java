@@ -75,7 +75,7 @@ public class ArticleController {
     }
 
     @GetMapping("/union/find")
-    public CommonResult<PageResult<ArticleBO>> unionFind(@RequestBody(required = false) @Validated UserQuery userQuery) {
+    public CommonResult<PageResult<ArticleBO>> unionFind(@RequestBody @Validated UserQuery userQuery) {
         PageResult<ArticleBO> result = articleService.unionFind(userQuery);
         return CommonResult.success(result);
     }

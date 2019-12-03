@@ -2,6 +2,7 @@ package com.codve.mybatis.model.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 import java.util.ArrayList;
@@ -25,5 +26,6 @@ public class UserQuery extends PageQuery{
 
     private List<@Min(value = 1) Long> userIds = new ArrayList<>();
 
+    @Range(min = 1, max = 4)
     private Integer orderBy;
 }
