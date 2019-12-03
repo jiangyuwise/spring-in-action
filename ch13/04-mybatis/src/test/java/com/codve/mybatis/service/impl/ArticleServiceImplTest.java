@@ -1,6 +1,5 @@
 package com.codve.mybatis.service.impl;
 
-import com.codve.mybatis.model.Article;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.service.ArticleService;
@@ -16,7 +15,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -92,7 +90,9 @@ class ArticleServiceImplTest {
     @Test
     void find() {
         ArticleQuery query = new ArticleQuery();
-        List<ArticleDO> articleDOList = articleService.find(query, 1, 2);
+        query.setPageNum(1);
+        query.setPageSize(2);
+        List<ArticleDO> articleDOList = articleService.find(query);
         assertTrue(articleDOList.size() > 0);
 
         PageResult<ArticleDO> pageResult = new PageResult<>(articleDOList);
@@ -103,9 +103,9 @@ class ArticleServiceImplTest {
 
         query.setStart(System.currentTimeMillis());
 
-        assertThrows(RuntimeException.class, () -> {
-            articleService.find(query, 1, 2);
-        });
+        articleDOList = articleService.find(query);
+
+        assertEquals(0, articleDOList.size());
     }
 
     @Test

@@ -1,8 +1,10 @@
 package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.dao.ArticleMapper;
+import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.data.object.ArticleDO;
+import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.service.ArticleService;
 import com.github.pagehelper.PageHelper;
@@ -22,13 +24,24 @@ public class ArticleServiceImpl implements ArticleService {
 
     private ArticleMapper articleMapper;
 
+    private UserMapper userMapper;
+
     @Autowired
     public void setArticleMapper(ArticleMapper articleMapper) {
         this.articleMapper = articleMapper;
     }
 
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     @Override
     public int save(ArticleDO articleDO) {
+        UserDO userDO = userMapper.findById(articleDO.getUserId());
+        if (userDO == null) {
+            exception(EX.E_1201);
+        }
         int result = articleMapper.save(articleDO);
         if (result != 1) {
             exception(EX.E_1101);
@@ -47,6 +60,14 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public int update(ArticleDO articleDO) {
+        if (articleMapper.findById(articleDO.getId()) == null) {
+            exception(EX.E_1401);
+        }
+
+        if (userMapper.findById(articleDO.getUserId()) == null) {
+            exception(EX.E_1201);
+        }
+
         int result = articleMapper.update(articleDO);
         if (result != 1) {
             exception(EX.E_1103);
@@ -64,18 +85,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDO> find(ArticleQuery articleQuery, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<ArticleDO> articleDoList = articleMapper.find(articleQuery);
-        if (articleDoList.size() == 0) {
-            exception(EX.E_1104);
-        }
-        return articleDoList;
-    }
-
-    @Override
     public List<ArticleDO> find(ArticleQuery articleQuery) {
-        return find(articleQuery, 1, 20);
+        PageHelper.startPage(articleQuery.getPageNum(), articleQuery.getPageSize());
+        return articleMapper.find(articleQuery);
     }
 
     @Override

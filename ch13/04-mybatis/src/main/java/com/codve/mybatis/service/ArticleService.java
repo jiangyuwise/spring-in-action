@@ -44,15 +44,6 @@ public interface ArticleService {
     /**
      * 按条件查找 articleDO
      * @param articleQuery 查询条件
-     * @param pageNum 页数
-     * @param pageSize 分页大小
-     * @return List<ArticleDO>
-     */
-    List<ArticleDO> find(ArticleQuery articleQuery, int pageNum, int pageSize);
-
-    /**
-     * 按条件查找 articleDO
-     * @param articleQuery 查询条件
      * @return List<ArticleDO>
      */
     List<ArticleDO> find(ArticleQuery articleQuery);
