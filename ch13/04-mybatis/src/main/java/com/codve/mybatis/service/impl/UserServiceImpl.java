@@ -1,6 +1,5 @@
 package com.codve.mybatis.service.impl;
 
-import com.codve.mybatis.dao.ArticleMapper;
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.data.object.UserDO;
@@ -25,16 +24,9 @@ public class UserServiceImpl implements UserService {
 
     private UserMapper userMapper;
 
-    private ArticleMapper articleMapper;
-
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
-    }
-
-    @Autowired
-    public void setArticleMapper(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
     }
 
     @Override
