@@ -124,17 +124,17 @@ public class ArticleServiceImpl implements ArticleService {
         PageHelper.startPage(1, articleCount);
         List<ArticleDO> articleDoList = articleMapper.find(articleQuery);
 
-        List<ArticleBO> articleBoList = new ArrayList<>();
-        for (UserDO userDO : userDoList) {
-            ArticleBO articleBo = new ArticleBO();
-            articleBo.setUserVO(UserConvert.convert(userDO));
-            List<ArticleVO> articleList = articleDoList.stream()
-                    .filter(e -> e.getUserId().equals(userDO.getId()))
-                    .map(ArticleConvert::convert)
-                    .collect(Collectors.toList());
-            articleBo.setArticleVoList(articleList);
-            articleBoList.add(articleBo);
-        }
+        List<ArticleBO> articleBoList = userDoList.stream()
+                .map(e -> {
+                    ArticleBO articleBo = new ArticleBO();
+                    articleBo.setUserVO(UserConvert.convert(e));
+                    List<ArticleVO> articleList = articleDoList.stream()
+                            .filter(a -> a.getUserId().equals(e.getId()))
+                            .map(ArticleConvert::convert)
+                            .collect(Collectors.toList());
+                    articleBo.setArticleVoList(articleList);
+                    return articleBo;
+                }).collect(Collectors.toList());
         PageResult<ArticleBO> result = new PageResult<>();
         result.setList(articleBoList);
         result.setTotal(pageInfo.getTotal());
