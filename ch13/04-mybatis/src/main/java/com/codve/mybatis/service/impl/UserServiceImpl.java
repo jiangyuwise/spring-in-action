@@ -85,11 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDO> find(UserQuery userQuery) {
         PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
-        List<UserDO> userDoList = userMapper.find(userQuery);
-        if (userDoList.size() == 0) {
-            userDoList = new ArrayList<>();
-        }
-        return userDoList;
+        return userMapper.find(userQuery);
     }
 
     @Override

@@ -17,6 +17,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+import static com.codve.mybatis.util.ExceptionUtil.exception;
+
 /**
  * @author admin
  * @date 2019/11/21 12:19
@@ -59,8 +61,11 @@ public class UserController {
     }
 
     @GetMapping("/find")
-    public CommonResult<PageResult<UserVO>> find(@RequestBody UserQuery query) {
+    public CommonResult<PageResult<UserVO>> find(@RequestBody @Validated UserQuery query) {
         List<UserDO> userDoList = userService.find(query);
+        if (userDoList.size() == 0) {
+            exception(EX.E_1104);
+        }
         PageResult<UserVO> pageResult = UserConvert.convert(userDoList);
         return CommonResult.success(pageResult);
 

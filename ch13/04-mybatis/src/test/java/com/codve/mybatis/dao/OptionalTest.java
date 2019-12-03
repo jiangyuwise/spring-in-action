@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author admin
@@ -83,6 +81,15 @@ public class OptionalTest {
         Optional<Integer> optional = Optional.empty();
         int result = optional.orElseGet(() -> 1);
         assertEquals(1, result);
+    }
+
+    @Test
+    void testOrElseThrow() {
+        Optional<Integer> optional = Optional.empty();
+        assertThrows(RuntimeException.class, () -> {
+            int result = optional.orElseThrow(() -> new RuntimeException("no number."));
+            System.out.println(result);
+        });
     }
 
 }
