@@ -34,7 +34,7 @@ public class ResultController {
 
     @GetMapping("/error")
     public CommonResult error() {
-        return CommonResult.error(EX.E_302);
+        return CommonResult.error(EX.E_1102);
     }
 
     @GetMapping("/single")

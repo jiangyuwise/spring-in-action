@@ -14,7 +14,11 @@ public class PageResult<T> {
 
     private List<T> list;
 
-    private long total;
+    private Long total;
+
+    public PageResult() {
+
+    }
 
     public PageResult(List<T> list) {
         this.list = list;
@@ -36,7 +40,7 @@ public class PageResult<T> {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(Long total) {
         this.total = total;
     }
 }

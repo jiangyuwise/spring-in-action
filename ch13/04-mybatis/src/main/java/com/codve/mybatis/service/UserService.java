@@ -45,15 +45,6 @@ public interface UserService {
     /**
      * 根据条件查找记录
      * @param userQuery 查询条件
-     * @param pageNum 页数
-     * @param pageSize 分页大小
-     * @return List<UserDO>
-     */
-    List<UserDO> find(UserQuery userQuery, int pageNum, int pageSize);
-
-    /**
-     * 根据条件查找记录
-     * @param userQuery 查询条件
      * @return List<UserDO>
      */
     List<UserDO> find(UserQuery userQuery);
@@ -68,9 +59,7 @@ public interface UserService {
     /**
      * 根据条件查找用户及其文章
      * @param userQuery 查询条件
-     * @param pageNum 页数
-     * @param pageSize 分页大小
      * @return List<UserArticleBO>
      */
-    List<UserArticleBO> findWithArticle(UserQuery userQuery, int pageNum, int pageSize);
+    List<UserArticleBO> findWithArticle(UserQuery userQuery);
 }

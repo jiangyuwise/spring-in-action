@@ -1,18 +1,20 @@
 package com.codve.mybatis.service.impl;
 
-import com.codve.mybatis.model.User;
-import com.codve.mybatis.model.business.object.UserArticleBO;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserQuery;
+import com.codve.mybatis.model.vo.UserVO;
 import com.codve.mybatis.service.UserService;
+import com.codve.mybatis.util.BeanUtil;
 import com.codve.mybatis.util.PageResult;
-import com.github.pagehelper.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -29,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UserServiceImplTest {
+
+    private Logger log = LoggerFactory.getLogger(UserServiceImplTest.class);
 
     @Autowired
     private DataSource dataSource;
@@ -89,20 +93,16 @@ class UserServiceImplTest {
         UserQuery userQuery = new UserQuery();
         userQuery.setName("j");
 
-        List<UserDO> userDOList = userService.find(userQuery, 1, 2);
+        List<UserDO> userDOList = userService.find(userQuery);
         assertTrue(userDOList.size() > 0);
 
         PageResult<UserDO> pageResult = new PageResult<>(userDOList);
         assertTrue(pageResult.getTotal() > 0);
 
-        userDOList = userService.find(userQuery);
-        assertTrue(userDOList.size() > 0);
-
         userQuery.setName("xxx");
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            userService.find(userQuery, 1, 0);
-        });
-        System.out.println(exception.getMessage());
+        userDOList = userService.find(userQuery);
+        assertEquals(0, userDOList.size());
+
     }
 
     @Test
@@ -116,16 +116,44 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findWithArticle() {
-        List<UserArticleBO> userList = userService.findWithArticle(null, 1, 3);
-        assertNotNull(userList);
+    void convert() {
+        List<UserDO> userDOList = userService.find(new UserQuery());
+        assertTrue(userDOList.size() > 0);
+        List<UserVO> userVOList = BeanUtil.copyList(userDOList, UserVO.class);
 
-        Page page = (Page) userList;
-        assertTrue(page.getTotal() > 0);
+        assertTrue(userVOList.size() > 0);
 
-        assertThrows(RuntimeException.class, () -> {
-            userService.findWithArticle(null, 10, 10);
-        });
+        userVOList.forEach(System.out::println);
     }
+
+    @Test
+    void convert2() {
+
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setName("james");
+        userDO.setBirthday(System.currentTimeMillis());
+
+        UserVO userVO = new UserVO();
+        BeanCopier copier = BeanCopier.create(UserDO.class, UserVO.class, false);
+        copier.copy(userDO, userVO, null);
+
+        log.warn(userVO.toString());
+
+        assertNotNull(userVO.getName());
+    }
+
+//    @Test
+//    void findWithArticle() {
+//        List<UserArticleBO> userList = userService.findWithArticle(null, 1, 3);
+//        assertNotNull(userList);
+//
+//        Page page = (Page) userList;
+//        assertTrue(page.getTotal() > 0);
+//
+//        assertThrows(RuntimeException.class, () -> {
+//            userService.findWithArticle(null, 10, 10);
+//        });
+//    }
 
 }

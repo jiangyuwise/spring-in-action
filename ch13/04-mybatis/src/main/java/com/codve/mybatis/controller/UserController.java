@@ -1,14 +1,21 @@
 package com.codve.mybatis.controller;
 
 import com.codve.mybatis.convert.UserConvert;
+import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.query.UserQuery;
+import com.codve.mybatis.model.query.UserUpdateQuery;
 import com.codve.mybatis.model.vo.UserVO;
 import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.CommonResult;
+import com.codve.mybatis.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.util.List;
 
 /**
  * @author admin
@@ -16,6 +23,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(value = "/user")
+@Validated
 public class UserController {
 
     private UserService userService;
@@ -26,46 +34,35 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public CommonResult save(@RequestBody @Valid UserVO user) {
+    public CommonResult save(@RequestBody @Validated UserVO user) {
         userService.save(UserConvert.convert(user));
         return CommonResult.success();
     }
 
     @GetMapping("/delete/{id}")
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         userService.deleteById(id);
         return CommonResult.success();
     }
-//
-//    @PostMapping("/update")
-//    public R update(@RequestBody User user) {
-//        userService.update(user);
-//        return R.success();
-//    }
-//
-//    @GetMapping("/{id}")
-//    @Valid
-//    public R findById(@PathVariable("id") Long id) {
-//        User user = userService.findById(id);
-//        if (user == null) {
-//            return R.error(EX.USER_NOT_FOUND);
-//        }
-//        return R.success(Collections.singletonList(user));
-//    }
-//
-//    @GetMapping("/list")
-//    public R list(@RequestParam(value = "pageNum", defaultValue = "1")  int pageNum,
-//                  @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-//        List<User> userList = userService.find(null, null, null, null, 1,
-//                pageNum, pageSize);
-//        if (userList.size() == 0) {
-//            return R.error(EX.FIND_FAILED);
-//        }
-//        return R.success(userList);
-//    }
-//
-//    @GetMapping("/find")
-//    public User find(@RequestBody User user) {
-//        return user;
-//    }
+
+    @PostMapping("/update")
+    public CommonResult update(@RequestBody @Validated UserUpdateQuery updateQuery) {
+        userService.update(UserConvert.convert(updateQuery));
+        return CommonResult.success();
+    }
+
+    @GetMapping("/{id}")
+    @Valid
+    public CommonResult<UserVO> findById(@PathVariable("id") @Valid @Min(value = 1) Long id) {
+        UserDO user = userService.findById(id);
+        return CommonResult.success(UserConvert.convert(user));
+    }
+
+    @GetMapping("/find")
+    public CommonResult<PageResult<UserVO>> find(@RequestBody UserQuery query) {
+        List<UserDO> userDoList = userService.find(query);
+        PageResult<UserVO> pageResult = UserConvert.convert(userDoList);
+        return CommonResult.success(pageResult);
+
+    }
 }

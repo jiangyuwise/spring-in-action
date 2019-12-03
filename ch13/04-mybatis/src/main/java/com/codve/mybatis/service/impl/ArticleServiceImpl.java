@@ -31,7 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
     public int save(ArticleDO articleDO) {
         int result = articleMapper.save(articleDO);
         if (result != 1) {
-            exception(EX.E_301);
+            exception(EX.E_1101);
         }
         return result;
     }
@@ -40,7 +40,7 @@ public class ArticleServiceImpl implements ArticleService {
     public int deleteById(Long id) {
         int result = articleMapper.deleteById(id);
         if (result != 1) {
-            exception(EX.E_302);
+            exception(EX.E_1102);
         }
         return result;
     }
@@ -49,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
     public int update(ArticleDO articleDO) {
         int result = articleMapper.update(articleDO);
         if (result != 1) {
-            exception(EX.E_303);
+            exception(EX.E_1103);
         }
         return result;
     }
@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDO findById(Long id) {
         ArticleDO articleDO = articleMapper.findById(id);
         if (articleDO == null) {
-            exception(EX.E_304);
+            exception(EX.E_1104);
         }
         return articleDO;
     }
@@ -68,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
         PageHelper.startPage(pageNum, pageSize);
         List<ArticleDO> articleDoList = articleMapper.find(articleQuery);
         if (articleDoList.size() == 0) {
-            exception(EX.E_304);
+            exception(EX.E_1104);
         }
         return articleDoList;
     }

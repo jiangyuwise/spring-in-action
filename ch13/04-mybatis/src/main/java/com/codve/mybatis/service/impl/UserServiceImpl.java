@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public int save(UserDO userDO) {
         int result = userMapper.save(userDO);
         if (result != 1) {
-            exception(EX.E_301);
+            exception(EX.E_1101);
         }
         return result;
     }
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public int deleteById(Long id) {
         int result = userMapper.deleteById(id);
         if (result != 1) {
-            exception(EX.E_302);
+            exception(EX.E_1102);
         }
         return result;
     }
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public int update(UserDO userDO) {
         int result = userMapper.update(userDO);
         if (result != 1) {
-            exception(EX.E_303);
+            exception(EX.E_1103);
         }
         return result;
     }
@@ -77,24 +77,19 @@ public class UserServiceImpl implements UserService {
     public UserDO findById(Long id) {
         UserDO userDO = userMapper.findById(id);
         if (userDO == null) {
-            exception(EX.E_304);
+            exception(EX.E_1104);
         }
         return userDO;
     }
 
     @Override
-    public List<UserDO> find(UserQuery userQuery, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public List<UserDO> find(UserQuery userQuery) {
+        PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
         List<UserDO> userDoList = userMapper.find(userQuery);
         if (userDoList.size() == 0) {
-            exception(EX.E_304);
+            userDoList = new ArrayList<>();
         }
         return userDoList;
-    }
-
-    @Override
-    public List<UserDO> find(UserQuery userQuery) {
-        return find(userQuery, 1, 20);
     }
 
     @Override
@@ -103,11 +98,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserArticleBO> findWithArticle(UserQuery userQuery, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public Page<UserArticleBO> findWithArticle(UserQuery userQuery) {
+        PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
         List<UserDO> userDoList = userMapper.find(userQuery);
         if (userDoList.size() == 0) {
-            exception(EX.E_304);
+            exception(EX.E_1104);
         }
         List<Long> userIds = userDoList.stream().map(UserDO::getId).collect(toList());
 
