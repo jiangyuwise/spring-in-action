@@ -42,4 +42,5 @@ public class CacheConfig extends CachingConfigurerSupport {
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
+
 }

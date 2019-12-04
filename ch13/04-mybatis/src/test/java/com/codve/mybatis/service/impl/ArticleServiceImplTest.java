@@ -113,4 +113,13 @@ class ArticleServiceImplTest {
         ArticleQuery query = new ArticleQuery();
         assertTrue(articleService.count(query) > 0);
     }
+
+    @Test
+    void find2() {
+        ArticleQuery query = new ArticleQuery();
+        query.setPageNum(1);
+        query.setPageSize(2);
+        List<ArticleDO> articleDOList = articleService.find(query);
+        assertTrue(articleDOList.size() > 0);
+    }
 }
