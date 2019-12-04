@@ -17,6 +17,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +47,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = RuntimeException.class)
     public int save(ArticleDO articleDO) {
         UserDO userDO = userMapper.findById(articleDO.getUserId());
         if (userDO == null) {
@@ -58,6 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public int deleteById(Long id) {
         int result = articleMapper.deleteById(id);
         if (result != 1) {
@@ -67,6 +71,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public int update(ArticleDO articleDO) {
         if (articleMapper.findById(articleDO.getId()) == null) {
             exception(EX.E_1401);

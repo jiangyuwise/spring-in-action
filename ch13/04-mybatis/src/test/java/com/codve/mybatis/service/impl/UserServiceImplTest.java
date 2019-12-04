@@ -143,17 +143,15 @@ class UserServiceImplTest {
         assertNotNull(userVO.getName());
     }
 
-//    @Test
-//    void findWithArticle() {
-//        List<UserArticleBO> userList = userService.findWithArticle(null, 1, 3);
-//        assertNotNull(userList);
-//
-//        Page page = (Page) userList;
-//        assertTrue(page.getTotal() > 0);
-//
-//        assertThrows(RuntimeException.class, () -> {
-//            userService.findWithArticle(null, 10, 10);
-//        });
-//    }
+    @Test
+    void unionSaveTest() {
+        assertThrows(RuntimeException.class, () -> userService.unionSave());
+    }
+
+    @Test
+    void transactionTest() {
+        userService.save(new UserDO());
+        userService.deleteById(1L);
+    }
 
 }

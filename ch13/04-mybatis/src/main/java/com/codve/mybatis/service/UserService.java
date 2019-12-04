@@ -54,4 +54,10 @@ public interface UserService {
      * @return int
      */
     int count(UserQuery userQuery);
+
+    /**
+     * 测试事务
+     * @return int
+     */
+    int unionSave();
 }

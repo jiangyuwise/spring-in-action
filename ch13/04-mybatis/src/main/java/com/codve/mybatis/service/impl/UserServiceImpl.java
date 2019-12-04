@@ -2,8 +2,10 @@ package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserQuery;
+import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.service.UserService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,16 @@ public class UserServiceImpl implements UserService {
 
     private UserMapper userMapper;
 
+    private ArticleService articleService;
+
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setArticleService(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     @Override
@@ -77,5 +86,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public int count(UserQuery userQuery) {
         return userMapper.count(userQuery);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public int unionSave() {
+        UserDO userDO = new UserDO();
+        userDO.setName("James");
+        userDO.setBirthday(System.currentTimeMillis());
+        ArticleDO articleDO = new ArticleDO();
+        articleDO.setUserId(1L);
+        articleDO.setTitle("测试事务");
+        articleDO.setCreateTime(System.currentTimeMillis());
+        userMapper.save(userDO);
+        articleService.save(articleDO);
+        throw new RuntimeException("手动触发错误");
     }
 }
