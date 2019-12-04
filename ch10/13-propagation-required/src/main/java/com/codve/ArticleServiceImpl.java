@@ -20,20 +20,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public Article save(Article article) {
         return articleRepository.save(article);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void saveWithException(Article article) throws RuntimeException {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
+    public void saveWithException(Article article) {
         articleRepository.save(article);
         throw new RuntimeException();
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public void saveWithCatch(Article article) {
         try {
             articleRepository.save(article);

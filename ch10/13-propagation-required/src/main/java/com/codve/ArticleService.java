@@ -8,7 +8,7 @@ public interface ArticleService {
 
     Article save(Article article);
 
-    void saveWithException(Article article) throws RuntimeException;
+    void saveWithException(Article article);
 
     void saveWithCatch(Article article);
 }

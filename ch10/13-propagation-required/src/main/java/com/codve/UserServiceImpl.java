@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     public void saveWithException(User user) {
         userRepository.save(user);
         throw new RuntimeException();
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
      * @param article article
      */
     @Override
-    public void save1(User user, Article article) throws RuntimeException{
+    public void save1(User user, Article article){
         userRepository.save(user);
         articleService.save(article);
         throw new RuntimeException();
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException runtimeException
      */
     @Override
-    public void save2(User user, Article article) throws RuntimeException {
+    public void save2(User user, Article article){
         userRepository.save(user);
         articleService.saveWithException(article);
     }
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException runtimeException
      */
     @Override
-    public void save3(User user, Article article) throws RuntimeException {
+    public void save3(User user, Article article) {
         userRepository.save(user);
         articleService.saveWithCatch(article);
         throw new RuntimeException();
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void save4(User user, Article article) throws RuntimeException {
+    public void save4(User user, Article article){
         userRepository.save(user);
         articleService.save(article);
         throw new RuntimeException();
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void save5(User user, Article article) throws RuntimeException {
+    public void save5(User user, Article article) {
         userRepository.save(user);
         articleService.saveWithException(article);
     }
@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void save6(User user, Article article) throws RuntimeException {
+    public void save6(User user, Article article) {
         userRepository.save(user);
         articleService.saveWithCatch(article);
     }
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException runtimeException
      */
     @Override
-    public void save9(User user) throws RuntimeException {
+    public void save9(User user) {
         this.saveWithException(user);
     }
 
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException runtimeException
      */
     @Override
-    public void save10(User user) throws RuntimeException {
+    public void save10(User user) {
         userService.saveWithException(user);
     }
 }
