@@ -16,6 +16,9 @@ import com.codve.mybatis.util.PageResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
  * @date 2019/11/20 10:40
  */
 @Service
+@CacheConfig(cacheNames = "ArticleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
 
     private ArticleMapper articleMapper;
@@ -48,6 +52,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = RuntimeException.class)
+    @CacheEvict(allEntries = true)
     public int save(ArticleDO articleDO) {
         UserDO userDO = userMapper.findById(articleDO.getUserId());
         if (userDO == null) {
@@ -62,6 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
+    @CacheEvict(allEntries = true)
     public int deleteById(Long id) {
         int result = articleMapper.deleteById(id);
         if (result != 1) {
@@ -72,6 +78,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
+    @CacheEvict(allEntries = true)
     public int update(ArticleDO articleDO) {
         if (articleMapper.findById(articleDO.getId()) == null) {
             exception(EX.E_1401);
@@ -89,6 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable
     public ArticleDO findById(Long id) {
         ArticleDO articleDO = articleMapper.findById(id);
         if (articleDO == null) {
@@ -98,6 +106,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(unless = "#result.size() == 0")
     public List<ArticleDO> find(ArticleQuery articleQuery) {
         PageHelper.startPage(articleQuery.getPageNum(), articleQuery.getPageSize());
         return articleMapper.find(articleQuery);
@@ -109,6 +118,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable
     public PageResult<ArticleBO> unionFind(UserQuery userQuery) {
         PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
         List<UserDO> userDoList = userMapper.find(userQuery);
