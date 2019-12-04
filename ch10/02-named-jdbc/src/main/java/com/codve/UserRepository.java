@@ -13,7 +13,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.sql.ResultSet;
@@ -93,15 +92,13 @@ public class UserRepository {
 
     public boolean batchUpdate(List<User> userList) {
         String sql = "update `user` set `user_name` = :name where `user_id` = :id";
-        List<MapSqlParameterSource> paramList = new ArrayList<>();
-        for (User user : userList) {
+        MapSqlParameterSource[] paramList = userList.stream().map(e -> {
             MapSqlParameterSource params = new MapSqlParameterSource();
-            params.addValue("name", user.getName());
-            params.addValue("id", user.getId());
-            paramList.add(params);
-        }
-        int[] result = template.batchUpdate(sql,
-                paramList.toArray(new MapSqlParameterSource[paramList.size()]));
+            params.addValue("name", e.getName());
+            params.addValue("id", e.getId());
+            return params;
+        }).toArray(MapSqlParameterSource[]::new);
+        int[] result = template.batchUpdate(sql,paramList);
         return Arrays.stream(result).allMatch(e -> e > 0);
     }
 
@@ -185,25 +182,25 @@ public class UserRepository {
         User user1 = userList.get(0);
         User user2 = userList.get(userList.size() - 1);
         Boolean result = transactionTemplate.execute((status) -> {
-                try {
-                    String sql = "insert into `user` (`user_name`, `user_birthday`) values (:name, :birthday)";
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("name", user1.getName());
-                    params.put("birthday", user1.getBirthday());
-                    template.update(sql, params);
+            try {
+                String sql = "insert into `user` (`user_name`, `user_birthday`) values (:name, :birthday)";
+                Map<String, Object> params = new HashMap<>();
+                params.put("name", user1.getName());
+                params.put("birthday", user1.getBirthday());
+                template.update(sql, params);
 
-                    sql = "insert into `user` (`name`, `birthday`) values (:name, :birthday)";
-                    params = new HashMap<>();
-                    params.put("name", user2.getName());
-                    params.put("birthday", user2.getBirthday());
-                    template.update(sql, params);
-                    transactionManager.commit(status);
-                    return true;
-                } catch (DataAccessException e) {
-                    status.setRollbackOnly();
-                    System.out.println(e.getMessage());
-                }
-                return false;
+                sql = "insert into `user` (`name`, `birthday`) values (:name, :birthday)";
+                params = new HashMap<>();
+                params.put("name", user2.getName());
+                params.put("birthday", user2.getBirthday());
+                template.update(sql, params);
+                transactionManager.commit(status);
+                return true;
+            } catch (DataAccessException e) {
+                status.setRollbackOnly();
+                System.out.println(e.getMessage());
+            }
+            return false;
         });
         return result;
     }
