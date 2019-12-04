@@ -26,7 +26,45 @@ class AppConfigTest {
     private RedisTemplate<String, String> redisTemplate;
 
     @Test
-    public void testKeyValue() {
+    void setStr() {
+        String key = "key";
+
+        // 存储英文字符, redis 中显示不变
+        redisTemplate.opsForValue().set(key, "hello");
+
+        // 存储中文字符, redis 中存储的是转义过后的字符
+        redisTemplate.opsForValue().set(key, "中国");
+
+        // 但取出来时, 客户端会自动进行转义
+        assertEquals("中国", redisTemplate.opsForValue().get(key));
+
+        redisTemplate.delete(key);
+    }
+
+    @Test
+    void setNum() {
+        String key = "key";
+
+        // 存储数字
+        redisTemplate.opsForValue().set(key, "1");
+
+        redisTemplate.opsForValue().increment(key, 1);
+        assertEquals("2", redisTemplate.opsForValue().get(key));
+        redisTemplate.delete(key);
+        redisTemplate.delete(key);
+    }
+
+    @Test
+    void setFloat() {
+        String key = "key";
+        redisTemplate.opsForValue().set(key, "1.5");
+        redisTemplate.opsForValue().increment(key, 1.0);
+        assertEquals("2.5", redisTemplate.opsForValue().get(key));
+        redisTemplate.delete(key);
+    }
+
+    @Test
+    void testKeyValue() {
         String key = "name";
         String value = "jimmy";
         redisTemplate.opsForValue().set(key, value);
@@ -37,7 +75,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testKeyValue2() {
+    void testKeyValue2() {
         String key = "name";
         String value = "jimmy";
         redisTemplate.opsForValue().set(key, value, 10, TimeUnit.SECONDS);
@@ -47,7 +85,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testKeyValue3() {
+    void testKeyValue3() {
         Map<String, String> map = new HashMap<>();
         map.put("name", "jimmy");
         map.put("age", "22");
@@ -65,7 +103,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testKeyValue4() {
+    void testKeyValue4() {
         int num = 23;
         redisTemplate.opsForValue().set("num", String.valueOf(num));
 
@@ -87,7 +125,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testKeyValue5() throws JsonProcessingException {
+    void testKeyValue5() throws JsonProcessingException {
         User user = new User("Alice", 24);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonStr = objectMapper.writeValueAsString(user);
@@ -95,6 +133,7 @@ class AppConfigTest {
         redisTemplate.opsForValue().set("user", jsonStr);
 
         String savedStr = redisTemplate.opsForValue().get("user");
+        assertNotNull(savedStr);
         System.out.println(savedStr);
         User savedUser = objectMapper.readValue(savedStr, User.class);
         System.out.println(savedUser.toString());
@@ -102,7 +141,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testList() {
+    void testList() {
         redisTemplate.opsForList().leftPush("users", "jimmy");
         redisTemplate.opsForList().leftPush("users", "Anna");
 
@@ -118,7 +157,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testHash() {
+    void testHash() {
         Map<String, String> map = new HashMap<>();
         map.put("name", "jimmy");
         map.put("age", "22");
@@ -132,7 +171,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testHash2() {
+    void testHash2() {
         redisTemplate.opsForHash().put("user", "name", "jimmy");
         redisTemplate.opsForHash().put("user", "age", "22");
 
@@ -144,7 +183,7 @@ class AppConfigTest {
     }
 
     @Test
-    public void testSet() {
+    void testSet() {
         redisTemplate.opsForSet().add("user", "jimmy");
         redisTemplate.opsForSet().add("user", "anna");
 
