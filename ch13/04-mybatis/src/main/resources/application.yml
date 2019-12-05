@@ -1,7 +1,4 @@
-
-
 spring:
-
   devtools:
     restart:
       poll-interval: 4s

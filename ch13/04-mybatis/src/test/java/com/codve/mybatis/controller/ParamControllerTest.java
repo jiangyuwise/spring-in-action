@@ -98,7 +98,7 @@ class ParamControllerTest {
         String result = mockMvc.perform(get("/param/str")
                 .param("name", "中国"))
                 .andExpect(content().string("中国"))
-                .andReturn().getResponse().getContentAsString(UTF_8);
+                .andReturn().getResponse().getContentAsString();
         log.error(result);
     }
 
