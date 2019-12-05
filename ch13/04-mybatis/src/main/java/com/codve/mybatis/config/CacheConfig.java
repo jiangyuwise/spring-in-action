@@ -1,7 +1,9 @@
 package com.codve.mybatis.config;
 
+import com.codve.mybatis.util.CacheKeyGenerator;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -41,6 +43,12 @@ public class CacheConfig extends CachingConfigurerSupport {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
+    }
+
+    @Bean
+    @Override
+    public KeyGenerator keyGenerator() {
+        return new CacheKeyGenerator();
     }
 
 }
