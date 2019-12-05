@@ -9,6 +9,9 @@ import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.service.UserService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +23,8 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
  * @author admin
  * @date 2019/11/19 15:48
  */
-
 @Service
+@CacheConfig(cacheNames = "UserServiceImpl")
 public class UserServiceImpl implements UserService {
 
     private UserMapper userMapper;
@@ -40,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
+    @CacheEvict(allEntries = true)
     public int save(UserDO userDO) {
         int result = userMapper.save(userDO);
         if (result != 1) {
@@ -50,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
+    @CacheEvict(cacheNames = {"UserServiceImpl, ArticleServiceImpl"}, allEntries = true)
     public int deleteById(Long id) {
         int result = userMapper.deleteById(id);
         if (result != 1) {
@@ -60,6 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
+    @CacheEvict
     public int update(UserDO userDO) {
         int result = userMapper.update(userDO);
         if (result != 1) {
@@ -69,6 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable
     public UserDO findById(Long id) {
         UserDO userDO = userMapper.findById(id);
         if (userDO == null) {
@@ -78,6 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(unless = "#result.size() == 0")
     public List<UserDO> find(UserQuery userQuery) {
         PageHelper.startPage(userQuery.getPageNum(), userQuery.getPageSize());
         return userMapper.find(userQuery);

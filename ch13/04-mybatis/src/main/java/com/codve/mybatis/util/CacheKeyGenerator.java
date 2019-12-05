@@ -30,7 +30,6 @@ public class CacheKeyGenerator implements KeyGenerator {
     @Override
     public Object generate(Object target, Method method, Object... params) {
         StringJoiner joiner = new StringJoiner("_");
-        joiner.add(target.getClass().getSimpleName());
         joiner.add(method.getName());
 
         Arrays.stream(params).filter(Objects::nonNull).forEach(e -> {

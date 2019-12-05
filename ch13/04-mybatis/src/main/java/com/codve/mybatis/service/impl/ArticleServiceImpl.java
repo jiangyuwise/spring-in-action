@@ -84,7 +84,8 @@ public class ArticleServiceImpl implements ArticleService {
             exception(EX.E_1401);
         }
 
-        if (userMapper.findById(articleDO.getUserId()) == null) {
+        Long userId = articleDO.getUserId();
+        if (userId != null && userMapper.findById(userId) == null) {
             exception(EX.E_1201);
         }
 
