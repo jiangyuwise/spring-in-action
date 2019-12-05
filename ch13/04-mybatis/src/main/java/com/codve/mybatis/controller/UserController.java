@@ -54,14 +54,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Valid
     public CommonResult<UserVO> findById(@PathVariable("id") @Valid @Min(value = 1) Long id) {
         UserDO user = userService.findById(id);
         return CommonResult.success(UserConvert.convert(user));
     }
 
     @GetMapping("/find")
-    public CommonResult<PageResult<UserVO>> find(@RequestBody @Validated UserQuery query) {
+    public CommonResult<PageResult<UserVO>> find(@Validated UserQuery query) {
         List<UserDO> userDoList = userService.find(query);
         if (userDoList.size() == 0) {
             exception(EX.E_1104);

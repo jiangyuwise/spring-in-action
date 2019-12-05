@@ -2,8 +2,12 @@ package com.codve.mybatis.controller;
 
 import com.codve.mybatis.model.query.ArticleUpdateQuery;
 import com.codve.mybatis.model.query.UserCreateQuery;
+import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.vo.ArticleVO;
+import com.codve.mybatis.model.vo.UserVO;
 import com.codve.mybatis.util.CommonResult;
+import com.codve.mybatis.util.PageResult;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,10 +16,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author admin
@@ -32,7 +45,9 @@ public class RestTemplateTest {
     @BeforeAll
     static void setUpAll() {
         mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         template = new RestTemplate();
+        template.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -41,10 +56,10 @@ public class RestTemplateTest {
 
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         UserCreateQuery query = new UserCreateQuery();
-        query.setName("中国");
+        query.setName("中国➔😄😇😌😙");
         query.setBirthday(System.currentTimeMillis());
         String queryStr = mapper.writeValueAsString(query);
 
@@ -74,8 +89,7 @@ public class RestTemplateTest {
         String url = "http://localhost:8080/article/1";
         ResponseEntity<CommonResult<ArticleVO>> responseEntity =
                 template.exchange(url, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<CommonResult<ArticleVO>>() {
-                        });
+                        new ParameterizedTypeReference<CommonResult<ArticleVO>>() {});
         CommonResult<ArticleVO> result = responseEntity.getBody();
         assertNotNull(result);
         assertEquals(0, result.getCode());
@@ -123,5 +137,25 @@ public class RestTemplateTest {
 
         assertNotNull(result);
         logger.error(result.toString());
+    }
+
+    @Test
+    void test7() throws JsonProcessingException {
+        String url = "http://localhost:8080/user/find";
+
+        UserQuery query = new UserQuery();
+        String queryStr = mapper.writeValueAsString(query);
+
+        HttpEntity<String> entity = new HttpEntity<>(queryStr);
+
+        ResponseEntity<CommonResult<PageResult<UserVO>>> responseEntity = template.exchange(url, HttpMethod.GET, entity,
+                new ParameterizedTypeReference<CommonResult<PageResult<UserVO>>>() {
+                });
+
+        CommonResult<PageResult<UserVO>> result = responseEntity.getBody();
+        assertEquals(0, result.getCode());
+
+        result.getData().getList().stream().forEach(e -> logger.error(e.toString()));
+
     }
 }

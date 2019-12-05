@@ -64,7 +64,7 @@ public class ArticleController {
     }
 
     @GetMapping("/find")
-    public CommonResult<PageResult<ArticleVO>> find(@RequestBody @Validated ArticleQuery query
+    public CommonResult<PageResult<ArticleVO>> find(@Validated ArticleQuery query
     ) {
         List<ArticleDO> articleDoList = articleService.find(query);
         if (articleDoList.size() == 0) {

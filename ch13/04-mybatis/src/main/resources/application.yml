@@ -1,4 +1,14 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+
 spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
   devtools:
     restart:
       poll-interval: 4s
