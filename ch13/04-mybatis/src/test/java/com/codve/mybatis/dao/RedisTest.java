@@ -43,17 +43,17 @@ public class RedisTest {
     }
 
     @Test
-    public void redisTest() {
+    void redisTest() {
         assertNotNull(redisTemplate);
     }
 
     @Test
-    public void objectRedisTest() {
+    void objectRedisTest() {
         assertNotNull(objectRedisTemplate);
     }
 
     @Test
-    public void StringSaveTest() throws JsonProcessingException {
+    void StringSaveTest() throws JsonProcessingException {
         String userStr= objectMapper.writeValueAsString(user);
         redisTemplate.opsForValue().set(user.getName(), userStr, 60, TimeUnit.SECONDS);
 
@@ -65,7 +65,7 @@ public class RedisTest {
     }
 
     @Test
-    public void ObjectSaveTest() {
+    void ObjectSaveTest() {
         objectRedisTemplate.opsForValue().set(user.getName(), user);
 
         User savedUser = (User) objectRedisTemplate.opsForValue().get(user.getName());

@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    @CacheEvict(cacheNames = {"UserServiceImpl, ArticleServiceImpl"}, allEntries = true)
+    @CacheEvict(cacheNames = {"ArticleServiceImpl", "UserServiceImpl"}, allEntries = true)
     public int deleteById(Long id) {
         int result = userMapper.deleteById(id);
         if (result != 1) {
