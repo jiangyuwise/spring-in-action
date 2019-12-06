@@ -9,32 +9,44 @@ import com.codve.mybatis.util.CommonResult;
 import com.codve.mybatis.util.PageResult;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author admin
  * @date 2019/12/5 13:58
  */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class RestTemplateTest {
+
+    @Autowired
+    private DataSource dataSource;
+
+    private static ResourceDatabasePopulator populator;
 
     private static ObjectMapper mapper;
 
@@ -44,27 +56,39 @@ public class RestTemplateTest {
 
     @BeforeAll
     static void setUpAll() {
+        populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("data/article.sql"));
         mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         template = new RestTemplate();
-        template.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+    }
+
+    @BeforeEach
+    void setUp() {
+        populator.execute(dataSource);
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void test1() throws JsonProcessingException {
         String url = "http://localhost:8080/user/save";
 
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         UserCreateQuery query = new UserCreateQuery();
         query.setName("中国➔😄😇😌😙");
         query.setBirthday(System.currentTimeMillis());
-        String queryStr = mapper.writeValueAsString(query);
+
+        Map<String, String> map = mapper.convertValue(query, new TypeReference<Map<String, String>>() {
+        });
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        map.forEach(params::add);
 
         // 设置请求体
-        HttpEntity<String> entity = new HttpEntity<>(queryStr, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> responseEntity =
                 template.exchange(url, HttpMethod.POST, entity, String.class);
@@ -103,13 +127,18 @@ public class RestTemplateTest {
         String url = "http://localhost:8080/article/update";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         ArticleUpdateQuery query = new ArticleUpdateQuery();
         query.setId(1L);
         query.setTitle("测试 HTTP client");
-        String queryStr = mapper.writeValueAsString(query);
-        HttpEntity<String> entity = new HttpEntity<>(queryStr, headers);
+
+        Map<String, String> map = mapper.convertValue(query, new TypeReference<Map<String, String>>() {
+        });
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        map.forEach(params::add);
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> responseEntity =
                 template.exchange(url, HttpMethod.POST, entity, String.class);
@@ -140,15 +169,20 @@ public class RestTemplateTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void test7() throws JsonProcessingException {
         String url = "http://localhost:8080/user/find";
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
         UserQuery query = new UserQuery();
+        query.setUserIds(Arrays.asList(-1L, 2L));
         String queryStr = mapper.writeValueAsString(query);
 
-        HttpEntity<String> entity = new HttpEntity<>(queryStr);
+        HttpEntity<String> entity = new HttpEntity<>(queryStr, headers);
 
-        ResponseEntity<CommonResult<PageResult<UserVO>>> responseEntity = template.exchange(url, HttpMethod.GET, entity,
+        ResponseEntity<CommonResult<PageResult<UserVO>>> responseEntity = template.exchange(url, HttpMethod.POST, entity,
                 new ParameterizedTypeReference<CommonResult<PageResult<UserVO>>>() {
                 });
 

@@ -38,6 +38,7 @@ class ArticleServiceImplTest {
     @BeforeAll
     static void setUpAll() {
         populator.addScript(new ClassPathResource("data/article.sql"));
+        populator.addScript(new ClassPathResource("data/user.sql"));
     }
 
     @BeforeEach
@@ -48,7 +49,7 @@ class ArticleServiceImplTest {
     @Test
     void save() {
         ArticleDO articleDO = new ArticleDO();
-        articleDO.setUserId(10L);
+        articleDO.setUserId(1L);
         articleDO.setTitle("7 天环游地球");
         articleDO.setCreateTime(System.currentTimeMillis());
 

@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public CommonResult save(@RequestBody @Validated UserVO user) {
+    public CommonResult save(@Validated UserVO user) {
         userService.save(UserConvert.convert(user));
         return CommonResult.success();
     }
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public CommonResult update(@RequestBody @Validated UserUpdateQuery updateQuery) {
+    public CommonResult update(@Validated UserUpdateQuery updateQuery) {
         userService.update(UserConvert.convert(updateQuery));
         return CommonResult.success();
     }
@@ -59,8 +59,8 @@ public class UserController {
         return CommonResult.success(UserConvert.convert(user));
     }
 
-    @GetMapping("/find")
-    public CommonResult<PageResult<UserVO>> find(@Validated UserQuery query) {
+    @PostMapping("/find")
+    public CommonResult<PageResult<UserVO>> find(@RequestBody @Validated UserQuery query) {
         List<UserDO> userDoList = userService.find(query);
         if (userDoList.size() == 0) {
             exception(EX.E_1104);

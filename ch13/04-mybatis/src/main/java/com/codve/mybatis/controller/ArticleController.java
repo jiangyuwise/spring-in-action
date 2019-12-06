@@ -39,7 +39,7 @@ public class ArticleController {
     }
 
     @PostMapping("/save")
-    public CommonResult save(@RequestBody @Validated ArticleCreateQuery query) {
+    public CommonResult save(@Validated ArticleCreateQuery query) {
 
         articleService.save(ArticleConvert.convert(query));
         return CommonResult.success();
@@ -52,7 +52,7 @@ public class ArticleController {
     }
 
     @PostMapping("/update")
-    public CommonResult update(@RequestBody @Validated ArticleUpdateQuery query) {
+    public CommonResult update(@Validated ArticleUpdateQuery query) {
         articleService.update(ArticleConvert.convert(query));
         return CommonResult.success();
     }
@@ -64,7 +64,7 @@ public class ArticleController {
     }
 
     @GetMapping("/find")
-    public CommonResult<PageResult<ArticleVO>> find(@Validated ArticleQuery query
+    public CommonResult<PageResult<ArticleVO>> find(@RequestBody @Validated ArticleQuery query
     ) {
         List<ArticleDO> articleDoList = articleService.find(query);
         if (articleDoList.size() == 0) {
@@ -79,5 +79,4 @@ public class ArticleController {
         PageResult<ArticleBO> result = articleService.unionFind(userQuery);
         return CommonResult.success(result);
     }
-
 }
