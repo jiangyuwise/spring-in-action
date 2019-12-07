@@ -1,8 +1,11 @@
 package com.codve.mybatis.aspect;
 
+import com.codve.mybatis.model.data.object.UserDO;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * @author admin
@@ -11,6 +14,13 @@ import org.aspectj.lang.annotation.*;
 @Aspect
 @Slf4j
 public class UserServiceAspect {
+
+    private PasswordEncoder encoder;
+
+    @Autowired
+    public void setEncoder(PasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
 
     @Pointcut("execution (* com.codve.mybatis.service.UserService.findById(Long)) && args(id)")
     public void findByIdPointcut(Long id) {
@@ -42,10 +52,13 @@ public class UserServiceAspect {
 
     @Around("execution(* com.codve.mybatis.service.UserService.save(..))")
     public Object aroundSave(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.warn("start UserService.save()");
-        Object object = joinPoint.proceed();
-        log.warn("finish UserService.save()");
-        return object;
+        Object[] args = joinPoint.getArgs();
+        UserDO userDO = (UserDO) args[0];
+        if (userDO != null && userDO.getPassword() != null) {
+            log.warn("encrypt password.");
+            userDO.setPassword(encoder.encode(userDO.getPassword()));
+        }
+        return joinPoint.proceed();
     }
 
     @Pointcut("execution(* com.codve.mybatis.service.UserService.deleteById(..))")

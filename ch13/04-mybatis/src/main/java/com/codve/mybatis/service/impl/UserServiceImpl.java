@@ -12,9 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.codve.mybatis.util.ExceptionUtil.exception;
@@ -25,7 +32,7 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
  */
 @Service
 @CacheConfig(cacheNames = "UserServiceImpl")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserMapper userMapper;
 
@@ -82,6 +89,17 @@ public class UserServiceImpl implements UserService {
             exception(EX.E_1104);
         }
         return userDO;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDO userDO = userMapper.findByName(username);
+        if (userDO == null) {
+            throw new UsernameNotFoundException(EX.E_1201.getMessage());
+        }
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return new User(userDO.getName(), userDO.getPassword(), authorities);
     }
 
     @Override

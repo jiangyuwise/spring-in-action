@@ -42,11 +42,19 @@ public interface UserMapper {
     UserDO findById(Long id);
 
     /**
+     * 根据用户名查找用户
+     * @param name name
+     * @return UserDO
+     */
+    UserDO findByName(String name);
+
+    /**
      * 根据条件查找记录
      * @param userQuery 查询条件
      * @return List<UserDO>
      */
     List<UserDO> find(UserQuery userQuery);
+
 
     /**
      * 根据条件统计条数

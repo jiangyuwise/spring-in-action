@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
@@ -38,6 +39,9 @@ class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @BeforeAll
     static void setUpAll() {
@@ -66,7 +70,29 @@ class UserMapperTest {
         assertEquals(1, userMapper.save(userDO));
 
         userDO = new UserDO();
+        userDO.setPassword("password");
+        assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
         userDO.setBirthday(1L);
+        assertEquals(1, userMapper.save(userDO));
+    }
+
+    @Test
+    void saveTwoParamTest() {
+        UserDO userDO = new UserDO();
+        userDO.setName("牛顿");
+        userDO.setPassword("password");
+        assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
+        userDO.setName("牛顿");
+        userDO.setBirthday(System.currentTimeMillis());
+        assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
+        userDO.setPassword("password");
+        userDO.setBirthday(System.currentTimeMillis());
         assertEquals(1, userMapper.save(userDO));
     }
 
@@ -74,6 +100,7 @@ class UserMapperTest {
     void saveTest() {
         UserDO userDO = new UserDO();
         userDO.setName("喜洋洋");
+        userDO.setPassword("password");
         userDO.setBirthday(System.currentTimeMillis());
         assertEquals(1, userMapper.save(userDO));
 
@@ -146,6 +173,12 @@ class UserMapperTest {
         userDO = userMapper.findById(1L);
         assertNotNull(userDO);
         assertEquals(1L, userDO.getId());
+    }
+
+    @Test
+    void findByNameTest() {
+        UserDO userDO = userMapper.findByName("James");
+        assertNotNull(userDO);
     }
 
     @Test

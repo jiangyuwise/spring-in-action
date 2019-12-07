@@ -13,5 +13,7 @@ public class UserDO {
 
     private String name;
 
+    private String password;
+
     private Long birthday;
 }

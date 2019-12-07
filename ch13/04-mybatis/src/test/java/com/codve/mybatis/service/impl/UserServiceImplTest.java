@@ -57,6 +57,16 @@ class UserServiceImplTest {
         assertEquals(1, userService.save(new UserDO()));
     }
 
+
+    @Test
+    void saveEncodeTest() {
+        UserDO userDO = new UserDO();
+        userDO.setName("詹姆斯");
+        userDO.setPassword("123456");
+        userDO.setBirthday(System.currentTimeMillis());
+        assertEquals(1, userService.save(userDO));
+    }
+
     @Test
     void deleteById() {
         assertEquals(1, userService.deleteById(1L));
