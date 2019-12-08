@@ -45,19 +45,20 @@ public class UserController {
         return CommonResult.success();
     }
 
+    @Secured("ROLE_USER")
     @GetMapping("/delete/{id}")
     public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         userService.deleteById(id);
         return CommonResult.success();
     }
 
+    @Secured("ROLE_USER")
     @PostMapping("/update")
     public CommonResult update(@Validated UserUpdateQuery updateQuery) {
         userService.update(UserConvert.convert(updateQuery));
         return CommonResult.success();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
     public CommonResult<UserVO> findById(@PathVariable("id") @Valid @Min(value = 1) Long id) {
         UserDO user = userService.findById(id);

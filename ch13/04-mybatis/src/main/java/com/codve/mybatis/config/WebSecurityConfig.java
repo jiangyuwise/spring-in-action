@@ -1,6 +1,7 @@
 package com.codve.mybatis.config;
 
-import com.codve.mybatis.service.UserService;
+import com.codve.mybatis.model.auth.AuthEntryPoint;
+import com.codve.mybatis.model.auth.AuthSuccessHandler;
 import com.codve.mybatis.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
  * @author admin
@@ -19,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserServiceImpl userServiceImpl;
@@ -30,7 +33,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //@formatter:off
         auth
@@ -42,19 +44,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
         http
+            .csrf().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(authEntryPoint()).and()
             .authorizeRequests()
-            .antMatchers("/user/delete/*").hasRole("USER")
-            .antMatchers("/article/delete/*").hasAuthority("ROLE_USER")
             .anyRequest().permitAll().and()
-            .formLogin().and()
-            .httpBasic().and()
-            .rememberMe().tokenValiditySeconds(30).key("123456")
-        ;
+            .formLogin()
+            .successHandler(successHandler())
+            .failureHandler(failureHandler()).and()
+            .logout();
+
         //@formatter:on
     }
 
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthSuccessHandler successHandler() {
+        return new AuthSuccessHandler();
+    }
+
+    @Bean
+    public SimpleUrlAuthenticationFailureHandler failureHandler() {
+        return new SimpleUrlAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AuthEntryPoint authEntryPoint() {
+        return new AuthEntryPoint();
     }
 }
