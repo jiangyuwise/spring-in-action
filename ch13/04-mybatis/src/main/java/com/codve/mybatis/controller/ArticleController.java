@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -57,6 +58,7 @@ public class ArticleController {
         return CommonResult.success();
     }
 
+    @RolesAllowed("ROLE_USER")
     @GetMapping("/{id}")
     public CommonResult<ArticleVO> findById(@PathVariable @Valid @Min(value = 1) Long id) {
         ArticleDO articleDO = articleService.findById(id);

@@ -3,6 +3,7 @@ package com.codve.mybatis.controller;
 import com.codve.mybatis.convert.UserConvert;
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.query.UserCreateQuery;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.query.UserUpdateQuery;
 import com.codve.mybatis.model.vo.UserVO;
@@ -10,9 +11,12 @@ import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.CommonResult;
 import com.codve.mybatis.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -36,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public CommonResult save(@Validated UserVO user) {
+    public CommonResult save(@Validated UserCreateQuery user) {
         userService.save(UserConvert.convert(user));
         return CommonResult.success();
     }
@@ -53,6 +57,7 @@ public class UserController {
         return CommonResult.success();
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
     public CommonResult<UserVO> findById(@PathVariable("id") @Valid @Min(value = 1) Long id) {
         UserDO user = userService.findById(id);
