@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -33,7 +32,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getUserIdFromToken(String token) {
+    public String getRedisKeyFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtProperties.getSecret())
                 .parseClaimsJws(token)

@@ -2,7 +2,6 @@ package com.codve.mybatis.filter;
 
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.data.object.UserPrincipal;
-import com.codve.mybatis.service.impl.UserServiceImpl;
 import com.codve.mybatis.util.CommonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +30,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private JwtProvider jwtUtil;
 
-    private UserServiceImpl userServiceImpl;
-
     private ObjectMapper objectMapper;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    private static final String prefix = "Bearer ";
+    private static final String PREFIX = "Bearer ";
 
     @Autowired
     public void setJwtUtil(JwtProvider jwtUtil) {
         this.jwtUtil = jwtUtil;
-    }
-
-    @Autowired
-    public void setUserServiceImpl(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
     }
 
     @Autowired
@@ -60,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String token = getJwt(request);
             if (StringUtils.hasText(token) && jwtUtil.validate(token)) {
-                String redisKey = jwtUtil.getUserIdFromToken(token);
+                String redisKey = jwtUtil.getRedisKeyFromToken(token);
                 String redisValue = redisTemplate.opsForValue().get(redisKey);
                 if (redisValue == null) {
                     exception(EX.E_1205);
@@ -87,7 +79,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private String getJwt(HttpServletRequest request) {
         String token = "";
         String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(prefix)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(PREFIX)) {
             token =  bearerToken.substring(7);
         }
         return token;
