@@ -2,21 +2,22 @@ package com.codve.mybatis.controller;
 
 import com.codve.mybatis.convert.UserConvert;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.auth.UserType;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserCreateQuery;
+import com.codve.mybatis.model.query.UserLoginQuery;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.query.UserUpdateQuery;
 import com.codve.mybatis.model.vo.UserVO;
+import com.codve.mybatis.service.AuthService;
 import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.CommonResult;
 import com.codve.mybatis.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -32,6 +33,8 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
 @Validated
 public class UserController {
 
+    private AuthService authService;
+
     private UserService userService;
 
     @Autowired
@@ -39,13 +42,29 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Autowired
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/save")
     public CommonResult save(@Validated UserCreateQuery user) {
+        UserDO userDO = UserConvert.convert(user);
+        userDO.setType(UserType.USER.getType());
         userService.save(UserConvert.convert(user));
         return CommonResult.success();
     }
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/save/admin")
+    public CommonResult saveAdmin(@Validated UserCreateQuery user) {
+        UserDO userDO = UserConvert.convert(user);
+        userDO.setType(UserType.ADMIN.getType());
+        userService.save(UserConvert.convert(user));
+        return CommonResult.success();
+    }
+
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/delete/{id}")
     public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         userService.deleteById(id);
@@ -65,6 +84,7 @@ public class UserController {
         return CommonResult.success(UserConvert.convert(user));
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/find")
     public CommonResult<PageResult<UserVO>> find(@RequestBody @Validated UserQuery query) {
         List<UserDO> userDoList = userService.find(query);
@@ -73,5 +93,11 @@ public class UserController {
         }
         PageResult<UserVO> pageResult = UserConvert.convert(userDoList);
         return CommonResult.success(pageResult);
+    }
+
+    @PostMapping("/auth")
+    public CommonResult<String> auth(@Validated UserLoginQuery query) {
+        String jwt = authService.passwordAuth(query.getName(), query.getPassword());
+        return CommonResult.success(jwt);
     }
 }

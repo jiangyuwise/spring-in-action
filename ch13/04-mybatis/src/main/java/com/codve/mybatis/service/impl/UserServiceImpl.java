@@ -4,6 +4,7 @@ import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.data.object.UserPrincipal;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.service.UserService;
@@ -12,16 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.codve.mybatis.util.ExceptionUtil.exception;
@@ -97,10 +94,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userDO == null) {
             throw new UsernameNotFoundException(EX.E_1201.getMessage());
         }
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new User(userDO.getName(), userDO.getPassword(), authorities);
+        return UserPrincipal.newInstance(userDO);
     }
+
+    public UserDetails loadUserById(Long id) {
+        UserDO userDO = userMapper.findById(id);
+        if (userDO == null) {
+            exception(EX.E_1201);
+        }
+        return UserPrincipal.newInstance(userDO);
+    }
+
 
     @Override
     @Cacheable(unless = "#result.size() == 0")

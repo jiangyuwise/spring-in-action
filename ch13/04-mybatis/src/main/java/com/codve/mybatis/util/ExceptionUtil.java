@@ -12,4 +12,8 @@ public class ExceptionUtil {
     public static void exception(EX ex) {
         throw new CommonException(ex.getCode(), ex.getMessage());
     }
+
+    public static void exception(int code, String msg) {
+        throw new CommonException(code, msg);
+    }
 }

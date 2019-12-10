@@ -76,6 +76,10 @@ class UserMapperTest {
         userDO = new UserDO();
         userDO.setBirthday(1L);
         assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
+        userDO.setType(2);
+        assertEquals(1, userMapper.save(userDO));
     }
 
     @Test
@@ -94,6 +98,16 @@ class UserMapperTest {
         userDO.setPassword("password");
         userDO.setBirthday(System.currentTimeMillis());
         assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
+        userDO.setName("牛顿");
+        userDO.setType(2);
+        assertEquals(1, userMapper.save(userDO));
+
+        userDO = new UserDO();
+        userDO.setType(2);
+        userDO.setPassword("password");
+        assertEquals(1, userMapper.save(userDO));
     }
 
     @Test
@@ -101,6 +115,7 @@ class UserMapperTest {
         UserDO userDO = new UserDO();
         userDO.setName("喜洋洋");
         userDO.setPassword("password");
+        userDO.setType(2);
         userDO.setBirthday(System.currentTimeMillis());
         assertEquals(1, userMapper.save(userDO));
 
@@ -133,6 +148,14 @@ class UserMapperTest {
         userDO = new UserDO();
         userDO.setBirthday(1L);
         assertEquals(0, userMapper.update(userDO));
+
+        userDO = new UserDO();
+        userDO.setPassword("123456");
+        assertEquals(0, userMapper.update(userDO));
+
+        userDO = new UserDO();
+        userDO.setType(2);
+        assertEquals(0, userMapper.update(userDO));
     }
 
     @Test
@@ -148,6 +171,16 @@ class UserMapperTest {
         assertEquals(1, userMapper.update(userDO));
 
         userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setPassword("123456");
+        assertEquals(1, userMapper.update(userDO));
+
+        userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setType(2);
+        assertEquals(1, userMapper.update(userDO));
+
+        userDO = new UserDO();
         userDO.setName("你好");
         userDO.setBirthday(0L);
         assertEquals(0, userMapper.update(userDO));
@@ -158,6 +191,8 @@ class UserMapperTest {
         UserDO userDO = new UserDO();
         userDO.setId(10L);
         userDO.setName("哈哈");
+        userDO.setPassword("123456");
+        userDO.setType(2);
         userDO.setBirthday(0L);
         assertEquals(0, userMapper.update(userDO));
 

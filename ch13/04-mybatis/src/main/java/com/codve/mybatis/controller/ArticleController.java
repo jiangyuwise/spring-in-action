@@ -13,10 +13,10 @@ import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.util.CommonResult;
 import com.codve.mybatis.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -39,6 +39,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/save")
     public CommonResult save(@Validated ArticleCreateQuery query) {
 
@@ -46,19 +47,20 @@ public class ArticleController {
         return CommonResult.success();
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/delete/{id}")
     public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         articleService.deleteById(id);
         return CommonResult.success();
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/update")
     public CommonResult update(@Validated ArticleUpdateQuery query) {
         articleService.update(ArticleConvert.convert(query));
         return CommonResult.success();
     }
 
-    @RolesAllowed("ROLE_USER")
     @GetMapping("/{id}")
     public CommonResult<ArticleVO> findById(@PathVariable @Valid @Min(value = 1) Long id) {
         ArticleDO articleDO = articleService.findById(id);

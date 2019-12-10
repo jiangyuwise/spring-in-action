@@ -15,5 +15,7 @@ public class UserDO {
 
     private String password;
 
+    private Integer type;
+
     private Long birthday;
 }

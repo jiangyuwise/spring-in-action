@@ -57,7 +57,6 @@ class UserServiceImplTest {
         assertEquals(1, userService.save(new UserDO()));
     }
 
-
     @Test
     void saveEncodeTest() {
         UserDO userDO = new UserDO();

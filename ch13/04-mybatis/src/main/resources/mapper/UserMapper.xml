@@ -5,11 +5,12 @@
         <id column="user_id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
         <result column="user_name" property="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result column="user_password" property="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="user_type" property="type" javaType="java.lang.Integer"  jdbcType="TINYINT"/>
         <result column="user_birthday" property="birthday" javaType="java.lang.Long" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="fields">
-        user_id, user_name, user_password, user_birthday
+        user_id, user_name, user_password, user_type, user_birthday
     </sql>
 
     <insert id="save" parameterType="UserDO" useGeneratedKeys="true" keyProperty="id">
@@ -17,12 +18,14 @@
         <trim suffixOverrides=",">
             <if test="name != null">user_name,</if>
             <if test="password != null">user_password,</if>
+            <if test="type != null">user_type,</if>
             <if test="birthday != null">user_birthday,</if>
         </trim>)
         values (
         <trim suffixOverrides=",">
             <if test="name != null">#{name},</if>
             <if test="password != null">#{password},</if>
+            <if test="type != null">#{type},</if>
             <if test="birthday != null">#{birthday},</if>
         </trim>)
     </insert>
@@ -31,6 +34,7 @@
         update user set
             <if test="name != null">user_name = #{name},</if>
             <if test="password != null">user_password = #{password},</if>
+            <if test="type != null">user_type = #{type},</if>
             <if test="birthday != null">user_birthday = #{birthday},</if>
             user_id = #{id}
         where user_id = #{id}
