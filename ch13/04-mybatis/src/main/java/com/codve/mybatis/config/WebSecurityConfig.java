@@ -4,6 +4,7 @@ import com.codve.mybatis.filter.JwtAuthFilter;
 import com.codve.mybatis.filter.JwtProvider;
 import com.codve.mybatis.handler.AccessDeniedHandlerImpl;
 import com.codve.mybatis.handler.AuthExceptionHandler;
+import com.codve.mybatis.properties.JwtProperties;
 import com.codve.mybatis.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -55,8 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling().authenticationEntryPoint(authExceptionHandler()).and()
             .exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
-            .anyRequest().permitAll();
+            .authorizeRequests().anyRequest().permitAll();
         //@formatter:on
         http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     }
@@ -90,5 +90,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtProvider jwtProvider() {
         return new JwtProvider();
+    }
+
+    @Bean
+    public JwtProperties jwtProperties() {
+        return new JwtProperties();
     }
 }

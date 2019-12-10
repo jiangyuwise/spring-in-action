@@ -52,3 +52,7 @@ mybatis:
   type-aliases-package: com.codve.mybatis.model.data.object
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  expire: 300s
+  secret: 123456

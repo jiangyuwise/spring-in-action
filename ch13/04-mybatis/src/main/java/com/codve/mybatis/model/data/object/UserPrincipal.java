@@ -1,6 +1,8 @@
 package com.codve.mybatis.model.data.object;
 
 import com.codve.mybatis.model.auth.UserType;
+import com.codve.mybatis.util.SimpleAuthorityDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +23,7 @@ public class UserPrincipal implements UserDetails {
 
     private String password;
 
+    @JsonDeserialize(using = SimpleAuthorityDeserializer.class)
     private Collection<? extends GrantedAuthority> authorities;
 
     @Override

@@ -64,14 +64,13 @@ public class UserController {
         return CommonResult.success();
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @Secured("ROLE_ADMIN")
     @GetMapping("/delete/{id}")
     public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         userService.deleteById(id);
         return CommonResult.success();
     }
-
-    @Secured("ROLE_USER")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("/update")
     public CommonResult update(@Validated UserUpdateQuery updateQuery) {
         userService.update(UserConvert.convert(updateQuery));

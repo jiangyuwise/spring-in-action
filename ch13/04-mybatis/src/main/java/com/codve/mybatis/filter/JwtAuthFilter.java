@@ -1,14 +1,15 @@
 package com.codve.mybatis.filter;
 
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.data.object.UserPrincipal;
 import com.codve.mybatis.service.impl.UserServiceImpl;
 import com.codve.mybatis.util.CommonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
+import static com.codve.mybatis.util.ExceptionUtil.exception;
 
 /**
  * @author admin
@@ -31,6 +34,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UserServiceImpl userServiceImpl;
 
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     private static final String prefix = "Bearer ";
 
@@ -52,13 +58,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = getJwt(request);
-            if (StringUtils.hasText(jwt) && jwtUtil.validate(jwt)) {
-                Long id = jwtUtil.getUserIdFromToken(jwt);
+            String token = getJwt(request);
+            if (StringUtils.hasText(token) && jwtUtil.validate(token)) {
+                String redisKey = jwtUtil.getUserIdFromToken(token);
+                String redisValue = redisTemplate.opsForValue().get(redisKey);
+                if (redisValue == null) {
+                    exception(EX.E_1205);
+                }
+                UserPrincipal principal = objectMapper.readValue(redisValue, UserPrincipal.class);
 
-                UserDetails userDetails = userServiceImpl.loadUserById(id);
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

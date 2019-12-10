@@ -1,11 +1,12 @@
 package com.codve.mybatis.filter;
 
-import com.codve.mybatis.model.data.object.UserPrincipal;
+import com.codve.mybatis.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -17,33 +18,31 @@ import java.util.Date;
 @Slf4j
 public class JwtProvider {
 
-    private String key = "123456";
+    @Autowired
+    private JwtProperties jwtProperties;
 
-    private int expiration = 5 * 60 * 1000;
-
-    public String generateToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    public String generateToken(String redisKey) {
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + expiration);
+        Date expireDate = new Date(now.getTime() + jwtProperties.getExpire().toMillis());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(redisKey)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS512, key)
+                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(key)
+                .setSigningKey(jwtProperties.getSecret())
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validate(String token) {
-        Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+        Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token);
         return true;
     }
 }
