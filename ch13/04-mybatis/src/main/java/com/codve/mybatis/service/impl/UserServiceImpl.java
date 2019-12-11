@@ -2,9 +2,9 @@ package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.auth.AuthUser;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.data.object.UserDO;
-import com.codve.mybatis.model.data.object.UserPrincipal;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.service.ArticleService;
 import com.codve.mybatis.service.UserService;
@@ -94,17 +94,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userDO == null) {
             throw new UsernameNotFoundException(EX.E_1201.getMessage());
         }
-        return UserPrincipal.newInstance(userDO);
+        return AuthUser.newInstance(userDO);
     }
-
-    public UserDetails loadUserById(Long id) {
-        UserDO userDO = userMapper.findById(id);
-        if (userDO == null) {
-            exception(EX.E_1201);
-        }
-        return UserPrincipal.newInstance(userDO);
-    }
-
 
     @Override
     @Cacheable(unless = "#result.size() == 0")

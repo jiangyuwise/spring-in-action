@@ -23,12 +23,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
-    private ObjectMapper objectMapper;
-
     @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private ObjectMapper objectMapper;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {

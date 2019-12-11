@@ -2,7 +2,7 @@ package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.filter.JwtProvider;
-import com.codve.mybatis.model.data.object.UserPrincipal;
+import com.codve.mybatis.model.auth.AuthUser;
 import com.codve.mybatis.properties.JwtProperties;
 import com.codve.mybatis.service.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,8 +65,8 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        user.setPassword(null);
+        AuthUser user = (AuthUser) authentication.getPrincipal();
+        user.eraseCredentials();
         String key = generateKey();
         String value = "";
         try {

@@ -13,7 +13,10 @@ public enum UserType {
     ADMIN(1, "ROLE_ADMIN"),
 
     // 普通用户
-    USER(2, "ROLE_USER");
+    USER(2, "ROLE_USER"),
+
+    // 测试用户
+    TEST(3, "ROLE_TEST");
 
     private Integer type;
 
@@ -27,8 +30,10 @@ public enum UserType {
     public static UserType getUserType(Integer type) {
         if (type == 1) {
             return ADMIN;
-        } else {
+        } else if (type == 2) {
             return USER;
+        } else {
+            return TEST;
         }
     }
 

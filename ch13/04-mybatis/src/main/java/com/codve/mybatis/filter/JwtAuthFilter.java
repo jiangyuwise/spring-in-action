@@ -1,7 +1,7 @@
 package com.codve.mybatis.filter;
 
 import com.codve.mybatis.exception.EX;
-import com.codve.mybatis.model.data.object.UserPrincipal;
+import com.codve.mybatis.model.auth.AuthUser;
 import com.codve.mybatis.util.CommonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String token = getJwt(request);
             if (StringUtils.hasText(token) && jwtUtil.validate(token)) {
@@ -57,10 +58,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 if (redisValue == null) {
                     exception(EX.E_1205);
                 }
-                UserPrincipal principal = objectMapper.readValue(redisValue, UserPrincipal.class);
+                AuthUser user = objectMapper.readValue(redisValue, AuthUser.class);
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

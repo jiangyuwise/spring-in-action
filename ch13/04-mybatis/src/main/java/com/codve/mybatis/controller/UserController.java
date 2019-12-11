@@ -5,11 +5,9 @@ import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.auth.UserType;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserCreateQuery;
-import com.codve.mybatis.model.query.UserLoginQuery;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.query.UserUpdateQuery;
 import com.codve.mybatis.model.vo.UserVO;
-import com.codve.mybatis.service.AuthService;
 import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.CommonResult;
 import com.codve.mybatis.util.PageResult;
@@ -33,18 +31,11 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
 @Validated
 public class UserController {
 
-    private AuthService authService;
-
     private UserService userService;
 
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
     }
 
     @PostMapping("/save")
@@ -92,11 +83,5 @@ public class UserController {
         }
         PageResult<UserVO> pageResult = UserConvert.convert(userDoList);
         return CommonResult.success(pageResult);
-    }
-
-    @PostMapping("/auth")
-    public CommonResult<String> auth(@Validated UserLoginQuery query) {
-        String jwt = authService.passwordAuth(query.getName(), query.getPassword());
-        return CommonResult.success(jwt);
     }
 }

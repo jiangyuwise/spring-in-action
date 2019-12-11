@@ -1,9 +1,10 @@
-package com.codve.mybatis.model.data.object;
+package com.codve.mybatis.model.auth;
 
-import com.codve.mybatis.model.auth.UserType;
+import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.util.SimpleAuthorityDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,13 +16,18 @@ import java.util.Collections;
  * @date 2019/12/9 10:31
  */
 @Data
-public class UserPrincipal implements UserDetails {
+public class AuthUser implements UserDetails, CredentialsContainer {
 
     private Long id;
 
     private String name;
 
     private String password;
+
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
 
     @JsonDeserialize(using = SimpleAuthorityDeserializer.class)
     private Collection<? extends GrantedAuthority> authorities;
@@ -31,16 +37,17 @@ public class UserPrincipal implements UserDetails {
         return authorities;
     }
 
-    public static UserPrincipal newInstance(UserDO userDO) {
-        UserPrincipal userPrincipal = new UserPrincipal();
-        userPrincipal.setId(userDO.getId());
-        userPrincipal.setName(userDO.getName());
-        userPrincipal.setPassword(userDO.getPassword());
+    public static AuthUser newInstance(UserDO userDO) {
+        AuthUser authUser = new AuthUser();
+        authUser.setId(userDO.getId());
+        authUser.setName(userDO.getName());
+        authUser.setPassword(userDO.getPassword());
 
         UserType userType = UserType.getUserType(userDO.getType());
-        userPrincipal.setAuthorities(Collections.singleton(
-                UserType.createAuthority(userType)));
-        return userPrincipal;
+        authUser.setAuthorities(Collections.singleton(
+                UserType.createAuthority(userType))
+        );
+        return authUser;
     }
 
     public Long getId() {
@@ -59,21 +66,28 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
+
+    @Override
+    public void eraseCredentials() {
+        password = null;
+    }
+
+
 }

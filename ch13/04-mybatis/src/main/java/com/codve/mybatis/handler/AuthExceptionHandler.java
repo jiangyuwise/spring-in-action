@@ -24,12 +24,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class AuthExceptionHandler implements AuthenticationEntryPoint {
 
-    private ObjectMapper objectMapper;
-
     @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private ObjectMapper objectMapper;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
