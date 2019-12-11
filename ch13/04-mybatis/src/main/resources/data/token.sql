@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `token_id` BIGINT ( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'token 编号',
+  `user_id` BIGINT ( 20 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户编号',
+  `device_type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '设备类型',
+  `device_code` VARCHAR ( 128 ) NOT NULL DEFAULT '' COMMENT '设备唯一识别码',
+  `app_type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '应用类型',
+  `ip` varchar(256) NOT NULL DEFAULT '' COMMENT 'ip 地址',
+  `token` VARCHAR ( 256 ) NOT NULL DEFAULT '' COMMENT 'token',
+  `expire_time` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '过期时间',
+  `create_time` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间',
+  PRIMARY KEY `pk_token_id` ( `token_id` )
+) AUTO_INCREMENT = 1;

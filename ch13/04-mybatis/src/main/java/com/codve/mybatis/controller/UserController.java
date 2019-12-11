@@ -42,7 +42,7 @@ public class UserController {
     public CommonResult save(@Validated UserCreateQuery user) {
         UserDO userDO = UserConvert.convert(user);
         userDO.setType(UserType.USER.getType());
-        userService.save(UserConvert.convert(user));
+        userService.save(userDO);
         return CommonResult.success();
     }
 

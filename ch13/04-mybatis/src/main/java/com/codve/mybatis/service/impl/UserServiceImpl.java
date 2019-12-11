@@ -83,7 +83,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDO findById(Long id) {
         UserDO userDO = userMapper.findById(id);
         if (userDO == null) {
-            exception(EX.E_1104);
+            exception(EX.E_1201);
+        }
+        return userDO;
+    }
+
+    @Override
+    public UserDO findByName(String name) {
+        UserDO userDO = userMapper.findByName(name);
+        if (userDO == null) {
+            exception(EX.E_1201);
         }
         return userDO;
     }

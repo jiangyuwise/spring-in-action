@@ -1,6 +1,5 @@
 package com.codve.mybatis.model.query;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class UserLoginQuery {
 
-    @JsonAlias(value = "username")
     @NotBlank
     private String name;
 

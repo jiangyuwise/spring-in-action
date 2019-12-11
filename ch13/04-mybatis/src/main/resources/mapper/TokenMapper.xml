@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codve.mybatis.dao.TokenMapper">
+    <resultMap id="TokenMap" type="TokenDO">
+        <id column="token_id" property="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result column="device_type" property="deviceType" jdbcType="INTEGER" javaType="INTEGER"/>
+        <result column="device_code" property="deviceCode" jdbcType="VARCHAR" javaType="String"/>
+        <result column="app_type" property="appType" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR" javaType="String"/>
+        <result column="token" property="token" jdbcType="VARCHAR" javaType="String"/>
+        <result column="expire_time" property="expireTime" jdbcType="BIGINT" javaType="Long"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT" javaType="Long"/>
+    </resultMap>
+
+    <sql id="fields">
+        token_id, user_id, device_type, device_code, app_type, ip, token, expire_time, create_time
+    </sql>
+
+    <insert id="save" parameterType="TokenDO" useGeneratedKeys="true" keyProperty="id">
+        insert into token (
+        <trim suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="deviceType != null">device_type,</if>
+            <if test="deviceCode != null">device_code,</if>
+            <if test="appType != null">app_type,</if>
+            <if test="ip != null">ip,</if>
+            <if test="token != null">token,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>)
+        values (
+        <trim suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="deviceCode != null">#{deviceCode},</if>
+            <if test="appType != null">#{appType},</if>
+            <if test="ip != null">#{ip},</if>
+            <if test="token != null">#{token},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>)
+    </insert>
+
+    <update id="update" parameterType="TokenDO">
+        update token set
+        <if test="userId != null">user_id = #{userId},</if>
+        <if test="deviceType != null">device_type = #{deviceType},</if>
+        <if test="deviceCode != null">device_code = #{deviceCode},</if>
+        <if test="appType != null">app_type = #{appType},</if>
+        <if test="ip != null">ip = #{ip},</if>
+        <if test="token != null">token = #{token},</if>
+        <if test="expireTime != null">expire_time = #{expireTime},</if>
+        <if test="createTime != null">create_time = #{createTime},</if>
+        token_id = #{id}
+        where token_id = #{id}
+    </update>
+
+    <select id="find" parameterType="TokenDO" resultMap="TokenMap">
+        SELECT <include refid="fields"/> FROM token
+        <where>
+            <if test="userId != null"> and user_id = #{userId}</if>
+        </where>
+        order by token_id asc limit 1
+    </select>
+
+    <select id="findByToken" parameterType="String" resultMap="TokenMap">
+        SELECT <include refid="fields"/> FROM token
+        where token = #{token}
+        order by token_id asc limit 1
+    </select>
+</mapper>

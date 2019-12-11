@@ -2,9 +2,15 @@ package com.codve.mybatis.service.impl;
 
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.filter.JwtProvider;
+import com.codve.mybatis.filter.TokenProvider;
 import com.codve.mybatis.model.auth.AuthUser;
+import com.codve.mybatis.model.data.object.TokenDO;
+import com.codve.mybatis.model.data.object.UserDO;
+import com.codve.mybatis.model.query.UserLoginQuery;
 import com.codve.mybatis.properties.JwtProperties;
 import com.codve.mybatis.service.AuthService;
+import com.codve.mybatis.service.TokenService;
+import com.codve.mybatis.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
@@ -14,10 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -31,32 +41,29 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtProperties jwtProperties;
 
+    @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    public void setJwtProvider(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    private UserService userService;
 
     @Autowired
-    public void setRedisTemplate(StringRedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+    private TokenService tokenService;
 
     @Override
     public String passwordAuth(String username, String password) {
@@ -85,5 +92,64 @@ public class AuthServiceImpl implements AuthService {
         String stringValue = String.valueOf(System.currentTimeMillis() + new Random().nextInt(1000));
         SecretKey key = new SecretKeySpec(jwtProperties.getSecret().getBytes(UTF_8), "HmacMD5");
         return Hashing.hmacMd5(key).hashString(stringValue, UTF_8).toString();
+    }
+
+    @Override
+    public String passwordAuth2(HttpServletRequest request, UserLoginQuery query) {
+        UserDO userDO = userService.findByName(query.getName());
+        if (userDO == null) {
+            exception(EX.E_1201);
+        }
+        boolean match = passwordEncoder.matches(query.getPassword(), userDO.getPassword());
+        if (!match) {
+            exception(EX.E_1202);
+        }
+
+        String token = TokenProvider.generateToken(userDO.getId());
+
+        TokenDO param = new TokenDO();
+        param.setUserId(userDO.getId());
+
+        List<TokenDO> tokenList = tokenService.find(param);
+
+        Long currentTime = System.currentTimeMillis();
+
+        if (tokenList.size() > 0) {
+            TokenDO tokenDO = tokenList.get(0);
+            tokenDO.setToken(token);
+            tokenDO.setCreateTime(currentTime);
+            tokenDO.setExpireTime(currentTime + jwtProperties.getExpire().toMillis());
+            tokenService.update(tokenDO);
+        } else {
+            TokenDO tokenDO = new TokenDO();
+            tokenDO.setUserId(userDO.getId());
+            tokenDO.setDeviceType(1);
+            tokenDO.setDeviceCode("201506");
+            tokenDO.setAppType(1);
+            tokenDO.setIp(request.getRemoteAddr());
+            tokenDO.setToken(token);
+            tokenDO.setCreateTime(System.currentTimeMillis());
+            tokenDO.setExpireTime(System.currentTimeMillis() + jwtProperties.getExpire().toMillis());
+            tokenService.save(tokenDO);
+        }
+        return token;
+    }
+
+    @Override
+    public boolean verify(TokenDO tokenDO) {
+        if (!StringUtils.hasText(tokenDO.getToken())) {
+            exception(EX.E_1206);
+        }
+        tokenDO = tokenService.findByToken(tokenDO.getToken());
+
+        if (System.currentTimeMillis() >= tokenDO.getExpireTime()) {
+            exception(EX.E_1205);
+        }
+        UserDO userDO = userService.findById(tokenDO.getUserId());
+        AuthUser authUser = AuthUser.newInstance(userDO);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                authUser, null, authUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return true;
     }
 }
