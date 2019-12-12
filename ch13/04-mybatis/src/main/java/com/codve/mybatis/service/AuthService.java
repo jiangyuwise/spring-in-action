@@ -1,5 +1,6 @@
 package com.codve.mybatis.service;
 
+import com.codve.mybatis.model.auth.UserType;
 import com.codve.mybatis.model.data.object.TokenDO;
 import com.codve.mybatis.model.query.UserLoginQuery;
 
@@ -33,5 +34,13 @@ public interface AuthService {
      * @return boolean
      */
     boolean verify(TokenDO tokenDO);
+
+    /**
+     * 验证 token
+     * @param tokenDO tokenDO
+    * @param userType userType
+     * @return boolean
+     */
+    boolean verify(TokenDO tokenDO, UserType userType);
 
 }

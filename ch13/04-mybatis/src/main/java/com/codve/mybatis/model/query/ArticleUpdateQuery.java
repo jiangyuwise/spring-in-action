@@ -17,9 +17,6 @@ public class ArticleUpdateQuery {
     @Min(value = 1)
     private Long id;
 
-    @Min(value = 1)
-    private Long userId;
-
     @NotBlank
     private String title;
 }

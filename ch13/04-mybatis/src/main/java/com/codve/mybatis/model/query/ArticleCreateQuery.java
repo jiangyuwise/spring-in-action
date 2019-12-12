@@ -13,10 +13,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ArticleCreateQuery {
 
-    @Min(value = 1)
-    @NotNull
-    private Long userId;
-
     @NotBlank
     private String title;
 }

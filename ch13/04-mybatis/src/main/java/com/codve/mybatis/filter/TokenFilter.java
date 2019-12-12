@@ -5,6 +5,7 @@ import com.codve.mybatis.handler.FilterExceptionHandler;
 import com.codve.mybatis.model.data.object.TokenDO;
 import com.codve.mybatis.service.AuthService;
 import com.codve.mybatis.util.CommonResult;
+import com.codve.mybatis.util.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import java.io.IOException;
 @Slf4j
 public class TokenFilter extends OncePerRequestFilter {
 
-    private static final String PREFIX = "Bearer ";
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -38,7 +37,7 @@ public class TokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        TokenDO tokenDO = getToken(request);
+        TokenDO tokenDO = TokenUtil.getToken(request);
         try {
             if (StringUtils.hasText(tokenDO.getToken())) {
                 authService.verify(tokenDO);
@@ -49,15 +48,5 @@ public class TokenFilter extends OncePerRequestFilter {
             String msg = objectMapper.writeValueAsString(CommonResult.error(EX.E_1204.getCode(), e.getMessage()));
             handler.handle(response, msg);
         }
-    }
-
-    private TokenDO getToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        if (StringUtils.hasText(token) && token.startsWith(PREFIX)) {
-            token = token.substring(PREFIX.length());
-        }
-        TokenDO tokenDO = new TokenDO();
-        tokenDO.setToken(token);
-        return tokenDO;
     }
 }

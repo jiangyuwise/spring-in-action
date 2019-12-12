@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests().anyRequest().permitAll();
         //@formatter:on
-        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -103,8 +103,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new FilterExceptionHandler();
     }
 
-    @Bean
-    public TokenFilter tokenFilter() {
-        return new TokenFilter();
-    }
+//    @Bean
+//    public TokenFilter tokenFilter() {
+//        return new TokenFilter();
+//    }
 }

@@ -5,6 +5,7 @@ import com.codve.mybatis.convert.UserConvert;
 import com.codve.mybatis.dao.ArticleMapper;
 import com.codve.mybatis.dao.UserMapper;
 import com.codve.mybatis.exception.EX;
+import com.codve.mybatis.model.auth.AuthUser;
 import com.codve.mybatis.model.business.object.ArticleBO;
 import com.codve.mybatis.model.data.object.ArticleDO;
 import com.codve.mybatis.model.data.object.UserDO;
@@ -12,6 +13,7 @@ import com.codve.mybatis.model.query.ArticleQuery;
 import com.codve.mybatis.model.query.UserQuery;
 import com.codve.mybatis.model.vo.ArticleVO;
 import com.codve.mybatis.service.ArticleService;
+import com.codve.mybatis.service.UserService;
 import com.codve.mybatis.util.PageResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,28 +39,18 @@ import static com.codve.mybatis.util.ExceptionUtil.exception;
 @CacheConfig(cacheNames = "ArticleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
 
+    @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
     private UserMapper userMapper;
-
-    @Autowired
-    public void setArticleMapper(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
-    }
-
-    @Autowired
-    public void setUserMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = RuntimeException.class)
     @CacheEvict(allEntries = true)
     public int save(ArticleDO articleDO) {
-        UserDO userDO = userMapper.findById(articleDO.getUserId());
-        if (userDO == null) {
-            exception(EX.E_1201);
-        }
+        AuthUser user = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        articleDO.setUserId(user.getId());
         int result = articleMapper.save(articleDO);
         if (result != 1) {
             exception(EX.E_1101);
@@ -80,15 +73,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional(rollbackFor = RuntimeException.class)
     @CacheEvict(allEntries = true)
     public int update(ArticleDO articleDO) {
-        if (articleMapper.findById(articleDO.getId()) == null) {
+        ArticleDO article = articleMapper.findById(articleDO.getId());
+        if (article == null) {
             exception(EX.E_1401);
         }
 
-        Long userId = articleDO.getUserId();
-        if (userId != null && userMapper.findById(userId) == null) {
-            exception(EX.E_1201);
+        AuthUser user = (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getId().equals(article.getUserId())) {
+            exception(EX.E_1103);
         }
-
         int result = articleMapper.update(articleDO);
         if (result != 1) {
             exception(EX.E_1103);

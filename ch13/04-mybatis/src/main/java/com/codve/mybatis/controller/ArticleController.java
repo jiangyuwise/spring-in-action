@@ -1,5 +1,7 @@
 package com.codve.mybatis.controller;
 
+import com.codve.mybatis.annotation.Admin;
+import com.codve.mybatis.annotation.User;
 import com.codve.mybatis.convert.ArticleConvert;
 import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.model.business.object.ArticleBO;
@@ -39,7 +41,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @User
     @PostMapping("/save")
     public CommonResult save(@Validated ArticleCreateQuery query) {
 
@@ -47,20 +49,21 @@ public class ArticleController {
         return CommonResult.success();
     }
 
-    @Secured("ROLE_ADMIN")
+    @Admin
     @GetMapping("/delete/{id}")
     public CommonResult delete(@PathVariable @Valid @Min(value = 1) Long id) {
         articleService.deleteById(id);
         return CommonResult.success();
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @User
     @PostMapping("/update")
     public CommonResult update(@Validated ArticleUpdateQuery query) {
         articleService.update(ArticleConvert.convert(query));
         return CommonResult.success();
     }
 
+    @User(required = false)
     @GetMapping("/{id}")
     public CommonResult<ArticleVO> findById(@PathVariable @Valid @Min(value = 1) Long id) {
         ArticleDO articleDO = articleService.findById(id);

@@ -4,6 +4,7 @@ import com.codve.mybatis.exception.EX;
 import com.codve.mybatis.filter.JwtProvider;
 import com.codve.mybatis.filter.TokenProvider;
 import com.codve.mybatis.model.auth.AuthUser;
+import com.codve.mybatis.model.auth.UserType;
 import com.codve.mybatis.model.data.object.TokenDO;
 import com.codve.mybatis.model.data.object.UserDO;
 import com.codve.mybatis.model.query.UserLoginQuery;
@@ -97,9 +98,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String passwordAuth2(HttpServletRequest request, UserLoginQuery query) {
         UserDO userDO = userService.findByName(query.getName());
-        if (userDO == null) {
-            exception(EX.E_1201);
-        }
         boolean match = passwordEncoder.matches(query.getPassword(), userDO.getPassword());
         if (!match) {
             exception(EX.E_1202);
@@ -137,6 +135,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean verify(TokenDO tokenDO) {
+        UserDO userDO = findUserByToken(tokenDO);
+        authenticate(userDO);
+        return true;
+    }
+
+    @Override
+    public boolean verify(TokenDO tokenDO, UserType userType) {
+        UserDO userDO = findUserByToken(tokenDO);
+        UserType realUserType = UserType.getUserType(userDO.getType());
+        if (realUserType != userType) {
+            exception(EX.E_1203);
+        }
+        authenticate(userDO);
+        return true;
+    }
+
+    private UserDO findUserByToken(TokenDO tokenDO) {
         if (!StringUtils.hasText(tokenDO.getToken())) {
             exception(EX.E_1206);
         }
@@ -145,11 +160,13 @@ public class AuthServiceImpl implements AuthService {
         if (System.currentTimeMillis() >= tokenDO.getExpireTime()) {
             exception(EX.E_1205);
         }
-        UserDO userDO = userService.findById(tokenDO.getUserId());
+        return userService.findById(tokenDO.getUserId());
+    }
+
+    private void authenticate(UserDO userDO) {
         AuthUser authUser = AuthUser.newInstance(userDO);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 authUser, null, authUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return true;
     }
 }
